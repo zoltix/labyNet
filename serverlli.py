@@ -22,9 +22,10 @@ class Server:
         for sock in self.clients_connecte: #list toutes les connections
             if sock != self.connexion_principale: #and sock != lui-même pour éviter un echo
                 try:
-                    sock.send("Tout le monde me reçois")
-                except:
-                     print('Merde')
+
+                    sock.send(("Tout le monde me reçois").encode())
+                except Exception as e :
+                     print(e)
 
 
 
