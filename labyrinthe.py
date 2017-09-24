@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
 """
-         Ce fichier contient le code principal du jeu.
+         Ce fichier contient le code principal du jeu...
 """
 import os
 import time
