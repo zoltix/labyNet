@@ -1,4 +1,6 @@
 import socket
+import sys
+import select
 
 hote = "localhost"
 port = 12800
@@ -16,6 +18,9 @@ while msg_a_envoyer != b"fin":
     connexion_avec_serveur.send(msg_a_envoyer)
     msg_recu = connexion_avec_serveur.recv(1024)
     print(msg_recu.decode()) # Là encore, peut planter s'il y a des accents
+    socket_list = [sys.stdin, connexion_avec_serveur]
+    ready_to_read,ready_to_write,in_error = select.select(socket_list , [], [])
+
 
 print("Fermeture de la connexion")
 connexion_avec_serveur.close()
