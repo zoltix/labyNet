@@ -7,7 +7,7 @@
 from carte import Carte
 class  Robot:
     """
-        caractèristique du Robot ee
+        caractèristique du Robot
     """
     def __init__(self, position_x, position_y):
         self.position_x = position_x
