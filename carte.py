@@ -13,7 +13,7 @@ class Carte:
         """ initialise la classe a partir d'un fichier """
         with open(chemin, "r") as fichier:
             contenu = fichier.read()
-        return cls(nom_carte, contenu)
+        return cls(nom_carte, contenu) 
 
     def __repr__(self):
         "affiche la carte par défaut"
