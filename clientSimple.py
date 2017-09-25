@@ -1,5 +1,5 @@
-# Définition d'un client réseau gérant en parallèle l'émission
-# et la réception des messages (utilisation de 2 THREADS).
+﻿# Définition d'un client réseau gérant en parallèle l'émission
+# et la réception des messages (utilisation de 2 THREADS) .
  
 host = '127.0.0.1'
 port = 46000
