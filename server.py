@@ -1,97 +1,65 @@
-
-
 # -*-coding:Utf-8 -*
-"""C'est la partie server de notra application """
+"""
+Serveur pour les client du labyrinthe
+"""
 import socket
 import sys
-import select
+import threading
 
+HOST = '127.0.01'
+PORT = 46000
 
-_PORT = 12800
-_HOST = socket.gethostbyname('localhost')
-_RECV_BUFFER = 1024
-_RUNNING = True
-_USERS = []
- 
-class Server():
-    def __init__(self):
-        self.port = _PORT
-        self.host = _HOST
-        self.running = _RUNNING
-        self.buffer = _RECV_BUFFER
-        self.users = _USERS
-        #self.socket = socket()
- 
-    def send(self, server, sender, data):
-        """ auie"""
-        data = data.encode('utf-8')
-        #data = data.encode()
-        for send in self.users:
-            if send != sender and send != server:
-                self.socket.send(data)
-    def welcome_message(self, newclient, message):
-        data = message.encode('utf-8')
-        #data = message.encode()
-        try:
-            self.socket.send(data)
-        except socket.error:
-            print("Sorry there was an error during the data sending...")
-
-    def bind(self):
-        """bind"""
-        try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.bind((self.host, self.port))
-            self.socket.listen(5)
-            self.users.append(self.socket)
-
-            print("*" * 60)
-            print("CHAT SERVER")
-            print("*" * 60)
-            print("listenning on port: {0}, host: {1}".format(self.port, self.host))
-        except socket.error as error:
-            print("Couldn't connect to the remote host: {0}" + "\n" + error).format(self.host)
-            sys.exit(1)
+class ThreadClient(threading.Thread):
+    '''dérivation d'un objet thread pour gérer la connexion avec un client'''
+    def __init__(self, conn):
+        threading.Thread.__init__(self)
+        self.connexion = conn
 
     def run(self):
-        """"auie """
-        self.bind()
-        while self.running:
-            try:
-                ready_to_read, ready_to_write, in_error = select.select(self.users, [], [], 0.05)
-            except select.error:
-                continue
-            for sock in ready_to_read:
-                # new connection request received
-                if sock == self.socket:
-                    sockfd, addr = self.socket.accept()
-                    self.users.append(sockfd)
-                    self.welcome_message(sockfd, "Welcome on H@X0r Chat server")
-                    print("New connected client (%s, %s)" % addr)
+      # Dialogue avec le client :
+        nom = self.getName()	    # Chaque thread possède un nom
+        try:
+            while 1:
+                msgClient = self.connexion.recv(1024).decode("Utf8")
+                if not msgClient or msgClient.upper() == "FIN":
+                    break
+                message = "%s> %s" % (nom, msgClient)
+                print(message)
+                # Faire suivre le message à tous les autres clients :
+                for cle in conn_client:
+                    if cle != nom:	  # ne pas le renvoyer à l'émetteur
+                        conn_client[cle].send(message.encode("Utf8"))
+            # Fermeture de la connexion :
+            self.connexion.close()	  # couper la connexion côté serveur
+            del conn_client[nom]	# supprimer son entrée dans le dictionnaire
+            print("Client %s déconnecté." % nom)
+        except ConnectionError as error_connection:
+            print('Error conncetion: Le client a été retiré {}'.format(error_connection))
+            del conn_client[nom]	# supprimer son entrée dans le dictionnaire
+      # Le thread se termine ici
 
-                    self.send(self.socket, sockfd, "[%s:%s] entered our chatting room" % addr)
-
-                # a message from a client ont a new connection
-                else:
-                    # process data receiving from client,
-                    try:
-                        data = self.socket.recv(self.buffer)
-                        if data:
-                            self.send(self.socket, sock, '\r' + '=>['+str(sock.getpeername())+']' + data)
-                        else:
-                            if sock in self.users:
-                                self.users.remove(sock)
-
-                                # at this stage no data means probably the connection has been broken
-                                self.send(self.socket, sock, "Client (%s, %s) is offline\n" % addr)
+# Initialisation du serveur - Mise en place du socket :
+mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+  mySocket.bind((HOST, PORT))
+except socket.error:
+  print("La liaison du socket à l'adresse choisie a échoué.")
+  sys.exit()
+print("Serveur prêt, en attente de requêtes ...")
+mySocket.listen(5)
  
- 
-                    except:
-                        self.send(self.socket, sock, "Client(%s, %s) is offline\n" % addr)
-                        continue
-        self.socket.close()
-
-
-if __name__ == '__main__':
-    server = Server()
-    server.run()  
+# Attente et prise en charge des connexions demandées par les clients :
+conn_client = {}	# dictionnaire des connexions clients
+while 1:
+  connexion, adresse = mySocket.accept()
+  # Créer un nouvel objet thread pour gérer la connexion :
+  th = ThreadClient(connexion)
+  th.start()
+  # Mémoriser la connexion dans le dictionnaire :
+  it = th.getName()	  # identifiant du thread
+  conn_client[it] = connexion
+  print("Client %s connecté, adresse IP %s, port %s." %\
+     (it, adresse[0], adresse[1]))
+  # Dialogue avec le client :
+  msg ="Vous êtes connecté. Envoyez vos messages."
+  connexion.send(msg.encode("Utf8"))
