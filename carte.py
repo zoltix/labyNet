@@ -27,7 +27,8 @@ class Carte:
 
     def afficher_carte(self):
         """ Afficher la carte en cours"""
-        print('\n'.join(map(''.join, self.grille))) #si liste a deux dimension
+        #print('\n'.join(map(''.join, self.grille))) #si liste a deux dimension
+        return '\n'.join(map(''.join, self.grille))
         #print('\n'.join(''.join(s) for s in grille)) #
         #print(*self.grille, sep='\n') # is chaine de caratère
 

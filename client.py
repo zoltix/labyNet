@@ -19,7 +19,7 @@ class ThreadReception(threading.Thread):
     def run(self):
         while not self.terminated:
             message_recu = self.connexion.recv(1024).decode("Utf8")
-            print("*" + message_recu + "*")
+            print(message_recu )
             if not message_recu or message_recu.upper() == "FIN":
                 break
             # Le thread <réception> se termine ici.
