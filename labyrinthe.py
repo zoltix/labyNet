@@ -82,7 +82,7 @@ class Labyrinthe:
                     return 1 #on retourne on continue voir _STATUS_Mouvement
             else:
                 return 1 #on retourne on continue voir _STATUS_Mouvement
-        except:
+        except Exception:
             e = sys.exc_info()[0]
             print("aie aie encore un insecte électrocuté\n{}".format(e))
 

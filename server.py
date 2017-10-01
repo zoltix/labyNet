@@ -44,6 +44,8 @@ class ThreadClient(threading.Thread):
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
             del conn_client[nom]	# supprimer son entrée dans le dictionnaire
       # Le thread se termine ici
+
+
 def main():
     # Initialisation du serveur - Mise en place du socket :
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -93,7 +95,6 @@ def main():
             jeux = jeux.restaurer_labyrinthe()
         #Début du jeux
 
-    
     # Attente et prise en charge des connexions demandées par les clients :
     while 1:
         connexion, adresse = mySocket.accept()
