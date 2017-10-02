@@ -23,6 +23,7 @@ class Protocole:
     def execute(self, message):
         """traitement du message """
         instruction = message[0:5]
+        command = message[5:]
         switch_dict = { #equivalent switch en C
             'chat:':self._chat,
             'ordr:':self._ordr,

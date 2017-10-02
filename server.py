@@ -21,21 +21,31 @@ class ThreadClient(threading.Thread):
         threading.Thread.__init__(self)
         self.connexion = conn
         self.carte = carte
+    def broadcast(self, message, soi_meme, client_name):
+        """permet d'envoyer un messaga au client"""
+        try:
+            for cle in conn_client:
+                if cle != client_name or soi_meme:  # ne pas le renvoyer à l'émetteur
+                    message = message +"\n"+self.carte.afficher_carte()
+                    conn_client[cle].send(message.encode("Utf8"))
+
+        except ConnectionError as error_connection:
+            print('Error conncetion: Le client a été retiré {}'.format(error_connection))
+            del conn_client[client_name]	# supprimer son entrée dans le dictionnaire
+ 
     def run(self):
       # Dialogue avec le client :
         nom = self.getName()	    # Chaque thread possède un nom
         try:
             while 1:
-                msgClient = self.connexion.recv(1024).decode("Utf8")
-                if not msgClient or msgClient.upper() == "FIN":
+                #reception du message
+                msg_client = self.connexion.recv(1024).decode("Utf8")
+                if not msg_client or msg_client.upper() == "FIN":
                     break
-                message = "%s> %s" % (nom, msgClient)
+                message = "%s> %s" % (nom, msg_client)
                 print(message)
                 # Faire suivre le message à tous les autres clients :
-                for cle in conn_client:
-                    if cle != nom:	  # ne pas le renvoyer à l'émetteur
-                        message = message +"\n"+self.carte.afficher_carte()
-                        conn_client[cle].send(message.encode("Utf8"))
+                self.broadcast(msg_client, True, nom)
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
             del conn_client[nom]	# supprimer son entrée dans le dictionnaire
@@ -107,7 +117,7 @@ def main():
         print("Client %s connecté, adresse IP %s, port %s." %\
             (it, adresse[0], adresse[1]))
         # Dialogue avec le client :
-        msg ="Vous êtes connecté. Envoyez vos messages.\n"
+        msg = "Vous êtes connecté. Envoyez vos messages.\n"
         msg = msg + carte.afficher_carte()
         connexion.send(msg.encode("Utf8"))
     
