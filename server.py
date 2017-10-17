@@ -32,7 +32,7 @@ class ThreadClient(threading.Thread):
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
             del conn_client[client_name]	# supprimer son entrée dans le dictionnaire
-    def sendMessage(self, message ,client_name):
+    def send_message(self, message, client_name):
         """envoie un message uniquement a un clien"""
         #message = message +"\n"+self.carte.afficher_carte()
         conn_client[client_name].send(message.encode("Utf8"))
