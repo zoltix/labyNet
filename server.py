@@ -36,7 +36,9 @@ class ThreadClient(threading.Thread):
         """envoie un message uniquement a un clien"""
         #message = message +"\n"+self.carte.afficher_carte()
         conn_client[client_name].send(message.encode("Utf8"))
-
+    
+    def _whoim(self):
+        return "whoim"
     def run(self):
       # Dialogue avec le client :
         nom = self.getName()	    # Chaque thread possède un nom
@@ -46,11 +48,13 @@ class ThreadClient(threading.Thread):
                 msg_client = self.connexion.recv(1024).decode("Utf8")
                 if not msg_client or msg_client.upper() == "FIN":
                     break
-                message = "%s> %s" % (nom, msg_client)
-                print(message)
-                
-                # Faire suivre le message à tous les autres clients :
-                self.broadcast(msg_client, True, nom)
+                if msg_client.upper() == "WHOIM":
+                    self.send_message(("whoim:"+nom), nom)
+                else:
+                    message = "%s> %s" % (nom, msg_client)
+                    print(message)
+                    # Faire suivre le message à tous les autres clients :
+                    self.broadcast(msg_client, True, nom)
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
             del conn_client[nom]	# supprimer son entrée dans le dictionnaire
