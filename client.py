@@ -5,17 +5,13 @@ import sys
 import threading
 import re
 import os
-
-host = '127.0.0.1'
-port = 46000
-CLIEN_NANE = "unknow(not connected)"
-
+from paramThread import ParamThread
 
 class ThreadReception(threading.Thread):
     """objet thread gérant la réception des messages"""
     def __init__(self, conn, CLIEN_NANE):
         threading.Thread.__init__(self)
-        self.CLIEN_NANE = CLIEN_NANE
+        self.client_name = CLIEN_NANE
         self.connexion = conn	     # réf. du socket de connexion
         self.terminated = False
     def stop(self):
@@ -24,11 +20,12 @@ class ThreadReception(threading.Thread):
     def run(self):
         while not self.terminated:
             message_recu = self.connexion.recv(1024).decode("Utf8")
+            print(self.client_name.get_thread_name())
             print(message_recu)
             if not message_recu or message_recu.upper() == "FIN":
                 break
-            if message_recu.upper().startswith("WHOIM:") :
-                self.CLIEN_NANE= message_recu  
+            if message_recu.upper().startswith("WHOIM:"):
+                self.client_name.set_thread_name(message_recu)
             # Le thread <réception> se termine ici.
             # On force la fermeture du thread <émission> :
         print("Client arrêté. Connexion interrompue.")
@@ -39,14 +36,14 @@ class ThreadEmission(threading.Thread):
     """objet thread gérant l'émission des messages"""
     clear = lambda: os.system('cls') #clear console peut être creer une classe outil
     def __init__(self, conn, CLIEN_NANE):
-        self.CLIEN_NANE = CLIEN_NANE
+        self.client_name = CLIEN_NANE
         threading.Thread.__init__(self)
         self.connexion = conn	     # réf. du socket de connexion
         self.terminated = False
     def stop(self):
         """fin de la thread """
         self.terminated = True
-   
+
     def _help(self):
         """Afficher l'aide"""
         #self.carte.afficher_carte()
@@ -105,25 +102,31 @@ class ThreadEmission(threading.Thread):
             func = switch_dict.get(_commande, self._defaut) # avec valeur par defaut
             message_emis = func()
             #message_emis = input()
-            self.connexion.send(func().encode("Utf8"))  
+            self.connexion.send(func().encode("Utf8"))
             if message_emis.upper() == "FIN":
                 self.stop()
                 break
 
+def main():
+    """  Programme principal - Établissement de la connexion : """
+    host = '127.0.0.1'
+    port = 46000
+    connexion = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        connexion.connect((host, port))
+    except socket.error:
+        print("La connexion a échoué.")
+        sys.exit()
+    print("Connexion établie avec le serveur.")
 
-# Programme principal - Établissement de la connexion :
-connexion = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-try:
-    connexion.connect((host, port))
-except socket.error:
-    print("La connexion a échoué.")
-    sys.exit()
-print("Connexion établie avec le serveur.")
+    # Dialogue avec le serveur : on lance deux threads pour gérer
+    # indépendamment l'émission et la réception des messages :
+    client_name = ParamThread("unknow")
+    th_e = ThreadEmission(connexion, client_name)
+    th_r = ThreadReception(connexion, client_name)
+    th_e.start()
+    th_r.start()
 
-# Dialogue avec le serveur : on lance deux threads pour gérer
-# indépendamment l'émission et la réception des messages :
-th_E = ThreadEmission(connexion,CLIEN_NANE)
-th_R = ThreadReception(connexion,CLIEN_NANE)
-th_E.start()
-th_R.start()
 
+if __name__ == '__main__':
+    main()
