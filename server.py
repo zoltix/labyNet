@@ -17,10 +17,10 @@ conn_client = {}	# dictionnaire des connexions clients
 
 class ThreadClient(threading.Thread):
     '''dérivation d'un objet thread pour gérer la connexion avec un client'''
-    def __init__(self, conn, carte):
+    def __init__(self, conn, jeux):
         threading.Thread.__init__(self)
         self.connexion = conn
-        self.carte = carte
+        self.jeux = jeux
     def broadcast(self, message, soi_meme, client_name):
         """permet d'envoyer un messaga au client
            message = message 
@@ -30,7 +30,7 @@ class ThreadClient(threading.Thread):
         try:
             for cle in conn_client:
                 if cle != client_name or soi_meme:  # ne pas le renvoyer à l'émetteur
-                    message_a_envoyer = message +"\n"+self.carte.afficher_carte()
+                    message_a_envoyer = message #+"\n"+self.jeux.carte.afficher_carte()
                     conn_client[cle].send(message_a_envoyer.encode("Utf8"))
 
         except ConnectionError as error_connection:
@@ -54,16 +54,18 @@ class ThreadClient(threading.Thread):
                     break
                 if msg_client.upper() == "WHOIM":
                     self.send_message(("whoim:"+nom), nom)
-                if msg_client.startswith("ordr:") :
+                if msg_client.startswith("ordr:"):
+                    #""" action dans le labyrinthe"""
                     lst_ordr = msg_client[4:].split(',')
-                    x= lst_ordr[1]
-                    y= lst_ordr[2]
-                    
+                    self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]))
+                    #x= lst_ordr[1]
+                    #y= lst_ordr[2]
+                    self.broadcast(self.jeux.carte.afficher_carte(), True, nom)
                 else:
                     message = "%s> %s" % (nom, msg_client)
                     print(message)
                     # Faire suivre le message à tous les autres clients :
-                    self.broadcast(msg_client, True, nom)
+                    #self.broadcast(msg_client, True, nom)
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
             del conn_client[nom]	# supprimer son entrée dans le dictionnaire
@@ -127,7 +129,7 @@ def main():
     while 1:
         connexion, adresse = mySocket.accept()
         # Créer un nouvel objet thread pour gérer la connexion :
-        th = ThreadClient(connexion, carte)
+        th = ThreadClient(connexion, jeux)
         th.start()
         # Mémoriser la connexion dans le dictionnaire :
         it = th.getName()	  # identifiant du thread
@@ -136,7 +138,7 @@ def main():
             (it, adresse[0], adresse[1]))
         # Dialogue avec le client :
         msg = "Vous êtes connecté. Envoyez vos messages.\n"
-        msg = msg + carte.afficher_carte()
+        msg = msg + jeux.carte.afficher_carte()
         #message de bienvenue sur le serveur
         connexion.send(msg.encode("Utf8"))
     

@@ -14,13 +14,19 @@ class ThreadReception(threading.Thread):
         self.client_name = CLIEN_NANE
         self.connexion = conn	     # réf. du socket de connexion
         self.terminated = False
+    @staticmethod
+    def clear():
+        """Statique methode pour netoyer l'écran"""
+        os.system('cls')
     def stop(self):
         """fin de la thread """
         self.terminated = True
     def run(self):
         while not self.terminated:
             message_recu = self.connexion.recv(1024).decode("Utf8")
-            print(self.client_name.get_thread_name())
+            #print(self.client_name.get_thread_name())
+            #os.system('cls')
+            ThreadReception.clear()
             print(message_recu)
             if not message_recu or message_recu.upper() == "FIN":
                 break

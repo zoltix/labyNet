@@ -42,6 +42,11 @@ class Labyrinthe:
         #self._position_robot_x, self._position_robot_y = \
         #   self.carte.coord_debut_x, self.carte.coord_debut_y
         self.precedent_position = PrecentePosition(" ")
+    def move(self, step_x, step_y):
+        """ to expose the methode mouvement (pour conserver le code d
+        origine)
+        """
+        return self._move(step_x, step_y)
 
     def _move(self, step_x, step_y):
         """ mouvement du robot """
