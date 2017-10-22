@@ -50,19 +50,19 @@ class ThreadEmission(threading.Thread):
         return 'Afficher l\'aide'
 
     def _nord(self):
-        message_emis = "ordr:Client,0,-1"
+        message_emis = "ordr:{},0,-1".format(self.client_name.get_thread_name())
         return message_emis
 
     def _est(self):
-        message_emis = "ordr:Client,1,0"
+        message_emis = "ordr:{},1,0".format(self.client_name.get_thread_name())
         return message_emis
 
     def _sud(self):
-        message_emis = "ordr:Client,0,1"
+        message_emis = "ordr:{},0,1".format(self.client_name.get_thread_name())
         return message_emis
 
     def _ouest(self):
-        message_emis = "ordr:Client,-1,0"
+        message_emis = "ordr:{},-1,0".format(self.client_name.get_thread_name())
         return message_emis
 
     def _quitter(self):
@@ -73,6 +73,7 @@ class ThreadEmission(threading.Thread):
 
     def _whoim(self):
         self.connexion.send("WHOIM".encode("Utf8"))
+
         return "whoim"
 
 
@@ -124,8 +125,9 @@ def main():
     client_name = ParamThread("unknow")
     th_e = ThreadEmission(connexion, client_name)
     th_r = ThreadReception(connexion, client_name)
-    th_e.start()
     th_r.start()
+    th_e.start()
+    
 
 
 if __name__ == '__main__':
