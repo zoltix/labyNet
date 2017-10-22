@@ -22,12 +22,16 @@ class ThreadClient(threading.Thread):
         self.connexion = conn
         self.carte = carte
     def broadcast(self, message, soi_meme, client_name):
-        """permet d'envoyer un messaga au client"""
+        """permet d'envoyer un messaga au client
+           message = message 
+           soi_même similaire a un echo
+           client_name  pour ecoho
+        """
         try:
             for cle in conn_client:
                 if cle != client_name or soi_meme:  # ne pas le renvoyer à l'émetteur
-                    message = message +"\n"+self.carte.afficher_carte()
-                    conn_client[cle].send(message.encode("Utf8"))
+                    message_a_envoyer = message +"\n"+self.carte.afficher_carte()
+                    conn_client[cle].send(message_a_envoyer.encode("Utf8"))
 
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
@@ -128,6 +132,7 @@ def main():
         # Dialogue avec le client :
         msg = "Vous êtes connecté. Envoyez vos messages.\n"
         msg = msg + carte.afficher_carte()
+        #message de bienvenue sur le serveur
         connexion.send(msg.encode("Utf8"))
     
 if __name__ == '__main__':

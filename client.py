@@ -47,7 +47,7 @@ class ThreadEmission(threading.Thread):
     def _help(self):
         """Afficher l'aide"""
         #self.carte.afficher_carte()
-        return 5
+        return 'Afficher l\'aide'
 
     def _nord(self):
         message_emis = "ordr:Client,0,-1"
