@@ -25,7 +25,7 @@ class ThreadReception(threading.Thread):
             if not message_recu or message_recu.upper() == "FIN":
                 break
             if message_recu.upper().startswith("WHOIM:"):
-                self.client_name.set_thread_name(message_recu)
+                self.client_name.set_thread_name(message_recu[6:])
             # Le thread <réception> se termine ici.
             # On force la fermeture du thread <émission> :
         print("Client arrêté. Connexion interrompue.")

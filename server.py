@@ -54,6 +54,11 @@ class ThreadClient(threading.Thread):
                     break
                 if msg_client.upper() == "WHOIM":
                     self.send_message(("whoim:"+nom), nom)
+                if msg_client.startswith("ordr:") :
+                    lst_ordr = msg_client[4:].split(',')
+                    x= lst_ordr[1]
+                    y= lst_ordr[2]
+                    
                 else:
                     message = "%s> %s" % (nom, msg_client)
                     print(message)
