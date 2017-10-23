@@ -34,14 +34,26 @@ class Labyrinthe:
                             '*(1-10)(N|E|S|O) plusieurs steps \n ex: (5N) bouge 5 fois vers le nord'}
 
     def __init__(self, carte):
+        """Avec un robot en stand alone"""
         assert isinstance(carte, Carte)# astuce pour ide pour intellisence---pff longue recherche
         self.carte = carte
         self._chemin = os.path.join("cartes", (self.carte.nom +"pre"))
+        self.robots ={}
+        self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
         #attention pour chargement après sauvegarde
-        self.robot = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
+        #self.robot = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
         #self._position_robot_x, self._position_robot_y = \
         #   self.carte.coord_debut_x, self.carte.coord_debut_y
         self.precedent_position = PrecentePosition(" ")
+    #@classmethod
+    #def 
+    def ajouter_robot(self):
+        """ Ajourter un robot """
+        self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
+    def enlever_robot(self):
+        """"Remove robot"""
+        self.robots.pop("name of robot")
+
     def move(self, step_x, step_y):
         """ to expose the methode mouvement (pour conserver le code d
         origine)
@@ -51,33 +63,33 @@ class Labyrinthe:
     def _move(self, step_x, step_y):
         """ mouvement du robot """
         try:
-            if len(self.carte.grille) > (self.robot.position_y + step_y) \
-            and (self.robot.position_y + step_y) >= 0:
-                if len(self.carte.grille[self.robot.position_y + step_y]) >\
-                (self.robot.position_x + step_x) \
-                and (self.robot.position_x + step_x) >= 0:
+            if len(self.carte.grille) > ( self.robots["default"].position_y + step_y) \
+            and (self.robots["default"].position_y + step_y) >= 0:
+                if len(self.carte.grille[self.robots["default"].position_y + step_y]) >\
+                (self.robots["default"].position_x + step_x) \
+                and (self.robots["default"].position_x + step_x) >= 0:
                     if Obstacle.collection_obstacle.get( \
-                        self.carte.grille[self.robot.position_y+ step_y][self.robot.position_x + step_x]).fin:
+                        self.carte.grille[self.robots["default"].position_y+ step_y][self.robots["default"].position_x + step_x]).fin:
                         os.remove(self._chemin)
                         return 2 #on retourne  c'est fini voir _STATUS_Mouvement
                         #delete fichier de sauvegarde
                     else:
                         pass
                     if  not Obstacle.collection_obstacle.get(\
-                             self.carte.grille[self.robot.position_y + step_y][self.robot.position_x + step_x]).bloquant:
+                             self.carte.grille[self.robots["default"].position_y + step_y][self.robots["default"].position_x + step_x]).bloquant:
                         # restauration du précédent symbole
-                        self.carte.grille[self.robot.position_y][self.robot.position_x] \
+                        self.carte.grille[self.robots["default"].position_y][self.robots["default"].position_x] \
                                    = self.precedent_position.pre_obstacle
                         # sauvegarde du symbole qui va être écrasé par le robot (X)
                         self.precedent_position.pre_obstacle \
-                                     = self.carte.grille[self.robot.position_y + step_y][self.robot.position_x + step_x]
+                                     = self.carte.grille[self.robots["default"].position_y + step_y][self.robots["default"].position_x + step_x]
                         #mettre le robot a sa nouvelle place avec le symbole dans la collection
-                        self.carte.grille[self.robot.position_y + step_y][self.robot.position_x + step_x] \
+                        self.carte.grille[self.robots["default"].position_y + step_y][self.robots["default"].position_x + step_x] \
                                     = Obstacle.collection_obstacle['X'].symbole 
                         self.carte.coord_debut_x, self.carte.coord_debut_y  \
-                                    = self.robot.position_x + step_x, self.robot.position_y + step_y
-                        self.robot.position_x, self.robot.position_y  \
-                                    = self.robot.position_x + step_x, self.robot.position_y + step_y
+                                    = self.robots["default"].position_x + step_x, self.robots["default"].position_y + step_y
+                        self.robots["default"].position_x, self.robots["default"].position_y  \
+                                    = self.robots["default"].position_x + step_x, self.robots["default"].position_y + step_y
                         #self.carte.enregistre_partie()
                         self.enregistrer_labyrinthe()
                         return 0 # on retourne on continue voir _STATUS_Mouvement

@@ -10,6 +10,7 @@ class  Robot:
         caractèristique du Robot
     """
     def __init__(self, position_x, position_y):
+        self.name = 'default' #ne pas oublier de le mettre dans le constructeurS
         self.position_x = position_x
         self.position_y = position_y
 
@@ -24,3 +25,4 @@ class  Robot:
     def construct_by_position(cls, position_x, position_y):
         """Constucteur avec surcharge """
         return cls(position_x, position_y)
+

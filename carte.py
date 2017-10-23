@@ -44,3 +44,8 @@ class Carte:
                 #    self.coord_x, self.coord_y))
                 break
         return  self.coord_debut_x, self.coord_debut_y
+    def robot_random_position(self):
+        """ Obtenir un position aléatoir"""
+        return "test"
+
+
