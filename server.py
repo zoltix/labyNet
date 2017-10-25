@@ -129,6 +129,7 @@ def main():
     while 1:
         connexion, adresse = mySocket.accept()
         # Créer un nouvel objet thread pour gérer la connexion :
+        jeux.ajouter_robot()
         th = ThreadClient(connexion, jeux)
         th.start()
         # Mémoriser la connexion dans le dictionnaire :

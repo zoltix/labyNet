@@ -38,8 +38,8 @@ class Labyrinthe:
         assert isinstance(carte, Carte)# astuce pour ide pour intellisence---pff longue recherche
         self.carte = carte
         self._chemin = os.path.join("cartes", (self.carte.nom +"pre"))
-        self.robots ={}
-        self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
+        self.robots = {}
+        #self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, 'X')
         #attention pour chargement après sauvegarde
         #self.robot = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
         #self._position_robot_x, self._position_robot_y = \
@@ -49,7 +49,8 @@ class Labyrinthe:
     #def 
     def ajouter_robot(self):
         """ Ajourter un robot """
-        self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
+        self.carte.robot_random_position() #make a random posisition
+        self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, 'X')
     def enlever_robot(self):
         """"Remove robot"""
         self.robots.pop("name of robot")
@@ -85,7 +86,7 @@ class Labyrinthe:
                                      = self.carte.grille[self.robots["default"].position_y + step_y][self.robots["default"].position_x + step_x]
                         #mettre le robot a sa nouvelle place avec le symbole dans la collection
                         self.carte.grille[self.robots["default"].position_y + step_y][self.robots["default"].position_x + step_x] \
-                                    = Obstacle.collection_obstacle['X'].symbole 
+                                    = self.robots["default"].symbole #Obstacle.collection_obstacle['X'].symbole 
                         self.carte.coord_debut_x, self.carte.coord_debut_y  \
                                     = self.robots["default"].position_x + step_x, self.robots["default"].position_y + step_y
                         self.robots["default"].position_x, self.robots["default"].position_y  \

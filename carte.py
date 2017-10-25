@@ -46,6 +46,18 @@ class Carte:
         return  self.coord_debut_x, self.coord_debut_y
     def robot_random_position(self):
         """ Obtenir un position aléatoir"""
-        return "test"
-
-
+        #enlever la position existante dans la carte.
+        for coord_y, line in enumerate(self.grille):
+            #print(coord_x)
+            coord_x = [pos for pos, char in enumerate(line) if char == 'X']
+            if coord_x:
+                self.coord_debut_y = coord_y
+                self.coord_debut_x = coord_x[0]
+                #print("Position du robot au Départ est X {} Y {} ".format(
+                #    self.coord_x, self.coord_y))
+                break
+        self.grille[self.coord_debut_y][self.coord_debut_x] = ' '
+        self.coord_debut_y = 2
+        self.coord_debut_x = 2
+        self.grille[self.coord_debut_y][self.coord_debut_x] = 'X'
+        return  2, 2
