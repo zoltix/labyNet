@@ -1,6 +1,7 @@
 # -*-coding:Utf-8 -*
 """Ce module contient la classe Carte."""
 import os
+import random
 class Carte:
     """Objet de transition entre un fichier et un labyrinthe."""
     def __init__(self, nom, chaine):
@@ -44,7 +45,7 @@ class Carte:
                 #    self.coord_x, self.coord_y))
                 break
         return  self.coord_debut_x, self.coord_debut_y
-    def robot_random_position(self):
+    def robot_random_position(self, symbole):
         """ Obtenir un position aléatoir"""
         #enlever la position existante dans la carte.
         for coord_y, line in enumerate(self.grille):
@@ -56,8 +57,15 @@ class Carte:
                 #print("Position du robot au Départ est X {} Y {} ".format(
                 #    self.coord_x, self.coord_y))
                 break
+        #effacer la position indiqué dans la carte
         self.grille[self.coord_debut_y][self.coord_debut_x] = ' '
-        self.coord_debut_y = 2
-        self.coord_debut_x = 2
-        self.grille[self.coord_debut_y][self.coord_debut_x] = 'X'
-        return  2, 2
+        while True:
+            y = random.randrange(1, len(self.grille), 1)
+            line = self.grille[y]
+            x = random.randrange(1, len(line), 1)
+            if self.grille[y][x] == " ":
+                break
+        self.coord_debut_y = y
+        self.coord_debut_x = x
+        self.grille[self.coord_debut_y][self.coord_debut_x] = symbole
+        return  x, y

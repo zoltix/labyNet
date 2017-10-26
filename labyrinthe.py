@@ -47,10 +47,10 @@ class Labyrinthe:
         self.precedent_position = PrecentePosition(" ")
     #@classmethod
     #def 
-    def ajouter_robot(self):
+    def ajouter_robot(self, symbole):
         """ Ajourter un robot """
-        self.carte.robot_random_position() #make a random posisition
-        self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, 'X')
+        self.carte.robot_random_position(symbole) #make a random posisition
+        self.robots["default"] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, symbole)
     def enlever_robot(self):
         """"Remove robot"""
         self.robots.pop("name of robot")
