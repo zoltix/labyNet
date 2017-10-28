@@ -17,10 +17,11 @@ conn_client = {}	# dictionnaire des connexions clients
 
 class ThreadClient(threading.Thread):
     '''dérivation d'un objet thread pour gérer la connexion avec un client'''
-    def __init__(self, conn, jeux):
+    def __init__(self, conn, jeux, joueur):
         threading.Thread.__init__(self)
         self.connexion = conn
         self.jeux = jeux
+        self.joueur = joueur
     def broadcast(self, message, soi_meme, client_name):
         """permet d'envoyer un messaga au client
            message = message 
@@ -57,7 +58,7 @@ class ThreadClient(threading.Thread):
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
                     lst_ordr = msg_client[4:].split(',')
-                    self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]))
+                    self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]), self.joueur)
                     #x= lst_ordr[1]
                     #y= lst_ordr[2]
                     self.broadcast(self.jeux.carte.afficher_carte(), True, nom)
@@ -127,14 +128,31 @@ def main():
 
     # Attente et prise en charge des connexions demandées par les clients :
     while 1:
+        #attendre de la connexion
         connexion, adresse = mySocket.accept()
+        #choix du symbole du symbole du robot
+        #jeux.ajouter_robot("P")
+        if bool(jeux.robots):
+            for item in list(jeux.robots):
+                print(item)
+                print(jeux.robots[item].symbole)
+                if jeux.robots[item].symbole == "1":
+                    joueur = "joueur2"
+                    jeux.ajouter_robot("2", joueur)
+                elif jeux.robots[item].symbole == "2":
+                    joueur = "default"
+                    jeux.ajouter_robot("1", joueur)
+                else:
+                    pass
+        else:
+            joueur = "default"
+            jeux.ajouter_robot("1", joueur)
+
         # Créer un nouvel objet thread pour gérer la connexion :
-        th = ThreadClient(connexion, jeux)
+        th = ThreadClient(connexion, jeux, joueur)
         it = th.getName()	  # identifiant du thread
-        jeux.ajouter_robot("P")
         th.start()
         # Mémoriser la connexion dans le dictionnaire :
-        
         conn_client[it] = connexion
         print("Client %s connecté, adresse IP %s, port %s." %\
             (it, adresse[0], adresse[1]))
