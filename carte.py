@@ -45,12 +45,7 @@ class Carte:
                 #    self.coord_x, self.coord_y))
                 break
         return  self.coord_debut_x, self.coord_debut_y
-
-    def robot_random_position(self, symbole):
-        """ Obtenir un position aléatoir"""
-        #enlever la position existante dans la carte.
-        _coord_y = 0
-        _coord_x = 0
+    def clean_robot(self):
         for coord_y, line in enumerate(self.grille):
             #print(coord_x)
             coord_x = [pos for pos, char in enumerate(line) if char == 'X']
@@ -63,6 +58,12 @@ class Carte:
         #effacer la position indiqué dans la carte
         if _coord_y != 0 and _coord_x != 0:
             self.grille[_coord_y][_coord_x] = ' '
+
+    def robot_random_position(self, symbole):
+        """ Obtenir un position aléatoir"""
+        #enlever la position existante dans la carte.
+        _coord_y = 0
+        _coord_x = 0
         while True:
             y = random.randrange(1, len(self.grille), 1)
             line = self.grille[y]

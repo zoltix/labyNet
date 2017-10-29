@@ -121,6 +121,7 @@ def main():
     clear()
     #charge la carte séléctionné
     carte = cartes[(int(resultat)-1)]
+    carte.clean_robot()
     jeux = Labyrinthe(carte)
     #si une partie encours/ a été sauvé
     chemin = os.path.join("cartes", (carte.nom +"pre"))
@@ -155,17 +156,17 @@ def main():
                       jeux.ajouter_robot(jeux.robots[item].symbole, item, thread_name)
                 else:
                     if len(jeux.robots) < 2:
-                        if jeux.robots[item].symbole == "1": 
+                        if jeux.robots[item].symbole == "X": 
                             joueur = "joueur2"
-                            jeux.ajouter_robot("2", joueur, thread_name)
-                        elif jeux.robots[item].symbole == "2":
-                            joueur = "default"
-                            jeux.ajouter_robot("1", joueur, thread_name)
+                            jeux.ajouter_robot("x", joueur, thread_name)
+                        elif jeux.robots[item].symbole == "x":
+                            joueur = "joueur1"
+                            jeux.ajouter_robot("X", joueur, thread_name)
                     else:
                         pass
         else:
-            joueur = "default"
-            jeux.ajouter_robot("1", joueur, thread_name)
+            joueur = "joueur1"
+            jeux.ajouter_robot("X", joueur, thread_name)
 
         # Créer un nouvel objet thread pour gérer la connexion :
         th.joueur = joueur
