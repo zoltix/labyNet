@@ -9,6 +9,7 @@ import os
 import re
 from carte import Carte
 from labyrinthe import Labyrinthe
+from paramThread import ParamThread
 
 clear = lambda: os.system('cls')
 HOST = '127.0.01'
@@ -55,13 +56,18 @@ class ThreadClient(threading.Thread):
                     break
                 if msg_client.upper() == "WHOIM":
                     self.send_message(("whoim:"+nom), nom)
+                    self.broadcast(self.jeux.carte.afficher_carte(), True, nom)
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
-                    lst_ordr = msg_client[4:].split(',')
-                    self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]), self.joueur)
-                    #x= lst_ordr[1]
-                    #y= lst_ordr[2]
-                    self.broadcast(self.jeux.carte.afficher_carte(), True, nom)
+                    if self.jeux.dernier_joueur == self.joueur:
+                        self.send_message("c'est est pas ton tour" , nom)
+                    else:
+                        lst_ordr = msg_client[4:].split(',')
+                        self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]), self.joueur)
+                        self.jeux.dernier_joueur = self.joueur
+                        #x= lst_ordr[1]
+                        #y= lst_ordr[2]
+                        self.broadcast(self.jeux.carte.afficher_carte(), True, nom)
                 else:
                     message = "%s> %s" % (nom, msg_client)
                     print(message)

@@ -45,12 +45,14 @@ class Labyrinthe:
         #self._position_robot_x, self._position_robot_y = \
         #   self.carte.coord_debut_x, self.carte.coord_debut_y
         self.precedent_position = PrecentePosition(" ")
+        self.dernier_joueur = ""
+
     #@classmethod
     #def 
-    def ajouter_robot(self, symbole, name):
+    def ajouter_robot(self, symbole, joueur):
         """ Ajourter un robot """
         x, y = self.carte.robot_random_position(symbole) #make a random posisition
-        self.robots[name] = Robot.construct_by_position(x, y, symbole)
+        self.robots[joueur] = Robot.construct_by_position(x, y, symbole)
     def enlever_robot(self):
         """"Remove robot"""
         self.robots.pop("name of robot")
