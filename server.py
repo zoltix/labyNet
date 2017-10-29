@@ -47,7 +47,7 @@ class ThreadClient(threading.Thread):
         return "whoim"
     def run(self):
       # Dialogue avec le client :
-        nom = self.getName()	    # Chaque thread possède un nom
+        nom_thread = self.getName()	    # Chaque thread possède un nom_thread
         try:
             while 1:
                 #reception du message
@@ -55,31 +55,31 @@ class ThreadClient(threading.Thread):
                 if not msg_client or msg_client.upper() == "FIN":
                     break
                 if msg_client.upper() == "WHOIM":
-                    self.send_message(("whoim:"+nom), nom)
-                    self.broadcast(self.jeux.carte.afficher_carte(), True, nom)
+                    self.send_message(("whoim:"+nom_thread), nom_thread)
+                    self.broadcast(self.jeux.carte.afficher_carte(), True, nom_thread)
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
                     if self.jeux.dernier_joueur == self.joueur:
-                        self.send_message("c'est est pas ton tour" , nom)
+                        self.send_message("c'est est pas ton tour" , nom_thread)
                     else:
                         lst_ordr = msg_client[4:].split(',')
                         self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]), self.joueur)
                         self.jeux.dernier_joueur = self.joueur
                         #x= lst_ordr[1]
                         #y= lst_ordr[2]
-                        self.broadcast(self.jeux.carte.afficher_carte(), True, nom)
+                        self.broadcast(self.jeux.carte.afficher_carte(), True, nom_thread)
                 else:
-                    message = "%s> %s" % (nom, msg_client)
+                    message = "%s> %s" % (nom_thread, msg_client)
                     print(message)
                     # Faire suivre le message à tous les autres clients :
-                    #self.broadcast(msg_client, True, nom)
+                    #self.broadcast(msg_client, True, nom_thread)
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
-            del conn_client[nom]	# supprimer son entrée dans le dictionnaire
-            print("Client %s déconnecté." % nom)
+            del conn_client[nom_thread]	# supprimer son entrée dans le dictionnaire
+            print("Client %s déconnecté." % nom_thread)
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
-            del conn_client[nom]	# supprimer son entrée dans le dictionnaire
+            del conn_client[nom_thread]	# supprimer son entrée dans le dictionnaire
       # Le thread se termine ici
 
 
