@@ -83,15 +83,15 @@ class Labyrinthe:
                              self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x]).bloquant:
                         # restauration du précédent symbole
                         self.carte.grille[self.robots[joueur].position_y][self.robots[joueur].position_x] \
-                                   = self.precedent_position.pre_obstacle
+                                   = self.robots[joueur].prev_symbole
                         # sauvegarde du symbole qui va être écrasé par le robot (X)
-                        self.precedent_position.pre_obstacle \
+                        self.robots[joueur].prev_symbole \
                                      = self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x]
                         #mettre le robot a sa nouvelle place avec le symbole dans la collection
                         self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
                                     = self.robots[joueur].symbole #Obstacle.collection_obstacle['X'].symbole 
-                        self.carte.coord_debut_x, self.carte.coord_debut_y  \
-                                    = self.robots[joueur].position_x + step_x, self.robots[joueur].position_y + step_y
+                        #self.carte.coord_debut_x, self.carte.coord_debut_y  \
+                        #             = self.robots[joueur].position_x + step_x, self.robots[joueur].position_y + step_y
                         self.robots[joueur].position_x, self.robots[joueur].position_y  \
                                     = self.robots[joueur].position_x + step_x, self.robots[joueur].position_y + step_y
                         #self.carte.enregistre_partie()

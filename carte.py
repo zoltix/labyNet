@@ -49,7 +49,7 @@ class Carte:
     def robot_random_position(self, symbole):
         """ Obtenir un position aléatoir"""
         #enlever la position existante dans la carte.
-        _coord_y =0
+        _coord_y = 0
         _coord_x = 0
         for coord_y, line in enumerate(self.grille):
             #print(coord_x)
