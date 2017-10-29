@@ -84,7 +84,7 @@ class ThreadEmission(threading.Thread):
 
 
     def run(self):
-        self._whoim()
+        #self._whoim()
 
         while not self.terminated:
             key = ""

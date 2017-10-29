@@ -49,13 +49,14 @@ class Labyrinthe:
 
     #@classmethod
     #def 
-    def ajouter_robot(self, symbole, joueur):
+    def ajouter_robot(self, symbole, joueur, thread_name):
         """ Ajourter un robot """
         x, y = self.carte.robot_random_position(symbole) #make a random posisition
-        self.robots[joueur] = Robot.construct_by_position(x, y, symbole)
-    def enlever_robot(self):
+        self.robots[joueur] = Robot.construct_by_position(x, y, symbole, thread_name)
+    def enlever_robot(self, joueur):
         """"Remove robot"""
-        self.robots.pop("name of robot")
+        self.carte.grille[self.robots[joueur].position_y][self.robots[joueur].position_x] = ' '
+        self.robots.pop(joueur)
 
     def move(self, step_x, step_y, joueur):
         """ to expose the methode mouvement (pour conserver le code d

@@ -1,7 +1,7 @@
 # -*-coding:Utf-8 -*
 """
 Serveur pour les client du labyrinthe
- """
+  """
 import socket
 import sys
 import threading
@@ -18,11 +18,11 @@ conn_client = {}	# dictionnaire des connexions clients
 
 class ThreadClient(threading.Thread):
     '''dérivation d'un objet thread pour gérer la connexion avec un client'''
-    def __init__(self, conn, jeux, joueur):
+    def __init__(self, conn, jeux):
         threading.Thread.__init__(self)
         self.connexion = conn
         self.jeux = jeux
-        self.joueur = joueur
+        self.joueur = ""
     def broadcast(self, message, soi_meme, client_name):
         """permet d'envoyer un messaga au client
            message = message 
@@ -37,6 +37,7 @@ class ThreadClient(threading.Thread):
 
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
+            #self.jeux.robots.pop(self.joueur)  pas correcte 
             del conn_client[client_name]	# supprimer son entrée dans le dictionnaire
     def send_message(self, message, client_name):
         """envoie un message uniquement a un clien"""
@@ -47,7 +48,7 @@ class ThreadClient(threading.Thread):
         return "whoim"
     def run(self):
       # Dialogue avec le client :
-        nom_thread = self.getName()	    # Chaque thread possède un nom_thread
+        thread_name = self.getName()	    # Chaque thread possède un thread_name
         try:
             while 1:
                 #reception du message
@@ -55,31 +56,33 @@ class ThreadClient(threading.Thread):
                 if not msg_client or msg_client.upper() == "FIN":
                     break
                 if msg_client.upper() == "WHOIM":
-                    self.send_message(("whoim:"+nom_thread), nom_thread)
-                    self.broadcast(self.jeux.carte.afficher_carte(), True, nom_thread)
+                    self.send_message(("whoim:"+thread_name), thread_name)
+                    self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
                     if self.jeux.dernier_joueur == self.joueur:
-                        self.send_message("c'est est pas ton tour" , nom_thread)
+                        self.send_message("c'est est pas ton tour" , thread_name)
                     else:
                         lst_ordr = msg_client[4:].split(',')
                         self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]), self.joueur)
                         self.jeux.dernier_joueur = self.joueur
                         #x= lst_ordr[1]
                         #y= lst_ordr[2]
-                        self.broadcast(self.jeux.carte.afficher_carte(), True, nom_thread)
+                        self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
                 else:
-                    message = "%s> %s" % (nom_thread, msg_client)
+                    message = "%s> %s" % (thread_name, msg_client)
                     print(message)
                     # Faire suivre le message à tous les autres clients :
-                    #self.broadcast(msg_client, True, nom_thread)
+                    #self.broadcast(msg_client, True, thread_name)
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
-            del conn_client[nom_thread]	# supprimer son entrée dans le dictionnaire
-            print("Client %s déconnecté." % nom_thread)
+            self.jeux.enlever_robot(self.joueur)  
+            del conn_client[thread_name]	# supprimer son entrée dans le dictionnaire
+            print("Client %s déconnecté." % thread_name)
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
-            del conn_client[nom_thread]	# supprimer son entrée dans le dictionnaire
+            self.jeux.enlever_robot(self.joueur)  
+            del conn_client[thread_name]	# supprimer son entrée dans le dictionnaire
       # Le thread se termine ici
 
 
@@ -138,30 +141,39 @@ def main():
         connexion, adresse = mySocket.accept()
         #choix du symbole du symbole du robot
         #jeux.ajouter_robot("P")
+        th = ThreadClient(connexion, jeux)
+        thread_name = th.getName()	  # identifiant du thread
         if bool(jeux.robots):
             for item in list(jeux.robots):
-                print(item)
-                print(jeux.robots[item].symbole)
-                if jeux.robots[item].symbole == "1":
-                    joueur = "joueur2"
-                    jeux.ajouter_robot("2", joueur)
-                elif jeux.robots[item].symbole == "2":
-                    joueur = "default"
-                    jeux.ajouter_robot("1", joueur)
+                print('************* robot ****************')
+                print('nom du robot {}'.format(item))
+                print('symbole du robot {}'.format(jeux.robots[item].symbole))
+                print('thread du robot {}'.format(jeux.robots[item].thread_name_r))
+                #test toujours valide 
+                if conn_client[jeux.robots[item].thread_name_r].fileno() < 0:
+                      jeux.enlever_robot(item)  
+                      jeux.ajouter_robot(jeux.robots[item].symbole, item, thread_name)
                 else:
-                    pass
+                    if len(jeux.robots) < 2:
+                        if jeux.robots[item].symbole == "1": 
+                            joueur = "joueur2"
+                            jeux.ajouter_robot("2", joueur, thread_name)
+                        elif jeux.robots[item].symbole == "2":
+                            joueur = "default"
+                            jeux.ajouter_robot("1", joueur, thread_name)
+                    else:
+                        pass
         else:
             joueur = "default"
-            jeux.ajouter_robot("1", joueur)
+            jeux.ajouter_robot("1", joueur, thread_name)
 
         # Créer un nouvel objet thread pour gérer la connexion :
-        th = ThreadClient(connexion, jeux, joueur)
-        it = th.getName()	  # identifiant du thread
+        th.joueur = joueur
         th.start()
         # Mémoriser la connexion dans le dictionnaire :
-        conn_client[it] = connexion
+        conn_client[thread_name] = connexion
         print("Client %s connecté, adresse IP %s, port %s." %\
-            (it, adresse[0], adresse[1]))
+            (thread_name, adresse[0], adresse[1]))
         # Dialogue avec le client :
         msg = "Vous êtes connecté. Envoyez vos messages.\n"
         msg = msg + jeux.carte.afficher_carte()
