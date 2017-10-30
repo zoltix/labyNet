@@ -1,3 +1,3 @@
 # labyNet
-labyrintheClientServer
-Ceci est une version qui ne fonctionne pas.
+labyrinthe Client Server
+Ceci est une version qui fonctionne avec beaucoup de buggs
