@@ -1,7 +1,7 @@
 # -*-coding:Utf-8 -*
 """
 Serveur pour les client du labyrinthe
-  """
+"""
 import socket
 import sys
 import threading
@@ -9,7 +9,6 @@ import os
 import re
 from carte import Carte
 from labyrinthe import Labyrinthe
-from paramThread import ParamThread
 
 clear = lambda: os.system('cls')
 HOST = '127.0.01'
@@ -25,7 +24,7 @@ class ThreadClient(threading.Thread):
         self.joueur = ""
     def broadcast(self, message, soi_meme, client_name):
         """permet d'envoyer un messaga au client
-           message = message 
+           message = message
            soi_même similaire a un echo
            client_name  pour ecoho
         """
@@ -37,13 +36,12 @@ class ThreadClient(threading.Thread):
 
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
-            #self.jeux.robots.pop(self.joueur)  pas correcte 
+            #self.jeux.robots.pop(self.joueur)  pas correcte
             del conn_client[client_name]	# supprimer son entrée dans le dictionnaire
     def send_message(self, message, client_name):
         """envoie un message uniquement a un clien"""
         #message = message +"\n"+self.carte.afficher_carte()
         conn_client[client_name].send(message.encode("Utf8"))
-    
     def _whoim(self):
         return "whoim"
     def run(self):
@@ -61,21 +59,18 @@ class ThreadClient(threading.Thread):
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
                     if self.jeux.dernier_joueur == self.joueur:
-                        self.send_message("c'est est pas ton tour" , thread_name)
+                        self.send_message("c'est est pas ton tour", thread_name)
                     else:
                         lst_ordr = msg_client[4:].split(',')
                         if lst_ordr[1] == 'move':
                             self.jeux.move(int(lst_ordr[2]), int(lst_ordr[3]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
                         if lst_ordr[1] == 'build':
-                            if lst_ordr[2] == 'M': 
-                                self.jeux.porte_en_mur(int(lst_ordr[3]),int(lst_ordr[4]), self.joueur)
+                            if lst_ordr[2] == 'M':
+                                self.jeux.porte_en_mur(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             if lst_ordr[2] == 'P':
-                                self.jeux.mur_en_porte(int(lst_ordr[3]),int(lst_ordr[4]), self.joueur)
-
+                                self.jeux.mur_en_porte(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
-                        #x= lst_ordr[1]
-                        #y= lst_ordr[2]
                         self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
                 else:
                     message = "%s> %s" % (thread_name, msg_client)
@@ -84,28 +79,27 @@ class ThreadClient(threading.Thread):
                     #self.broadcast(msg_client, True, thread_name)
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
-            self.jeux.enlever_robot(self.joueur)  
+            self.jeux.enlever_robot(self.joueur)
             del conn_client[thread_name]	# supprimer son entrée dans le dictionnaire
             print("Client %s déconnecté." % thread_name)
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
-            self.jeux.enlever_robot(self.joueur)  
+            self.jeux.enlever_robot(self.joueur)
             del conn_client[thread_name]	# supprimer son entrée dans le dictionnaire
       # Le thread se termine ici
 
 
 def main():
     # Initialisation du serveur - Mise en place du socket :
-    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        mySocket.bind((HOST, PORT))
+        my_socket.bind((HOST, PORT))
     except socket.error:
         print("La liaison du socket à l'adresse choisie a échoué.")
         sys.exit()
     print("Serveur prêt, en attente de requêtes ...")
-    mySocket.listen(5)
-    
-    
+    my_socket.listen(5)
+
     #choisir la carte.
     # On charge les cartes existantes
     clear()
@@ -123,7 +117,7 @@ def main():
     #on Choisi la carte
     while True:
         resultat = input("Entrez un numéro de labyrinthe pour commencer à jouer : ")
-        if resultat.isdigit() == True:
+        if resultat.isdigit():
             if  int(resultat) > 0   and int(resultat) <= len(cartes):
                 break
     clear()
@@ -143,28 +137,27 @@ def main():
             clear()
             jeux = jeux.restaurer_labyrinthe()
         #Début du jeux
-
     # Attente et prise en charge des connexions demandées par les clients :
     while 1:
         #attendre de la connexion
-        connexion, adresse = mySocket.accept()
+        connexion, adresse = my_socket.accept()
         #choix du symbole du symbole du robot
         #jeux.ajouter_robot("P")
-        th = ThreadClient(connexion, jeux)
-        thread_name = th.getName()	  # identifiant du thread
+        th_client = ThreadClient(connexion, jeux)
+        thread_name = th_client.getName()	  # identifiant du thread
         if bool(jeux.robots):
             for item in list(jeux.robots):
                 print('************* robot ****************')
                 print('nom du robot {}'.format(item))
                 print('symbole du robot {}'.format(jeux.robots[item].symbole))
                 print('thread du robot {}'.format(jeux.robots[item].thread_name_r))
-                #test toujours valide 
+                #test toujours valide
                 if conn_client[jeux.robots[item].thread_name_r].fileno() < 0:
-                      jeux.enlever_robot(item)  
-                      jeux.ajouter_robot(jeux.robots[item].symbole, item, thread_name)
+                    jeux.enlever_robot(item)
+                    jeux.ajouter_robot(jeux.robots[item].symbole, item, thread_name)
                 else:
                     if len(jeux.robots) < 2:
-                        if jeux.robots[item].symbole == "X": 
+                        if jeux.robots[item].symbole == "X":
                             joueur = "joueur2"
                             jeux.ajouter_robot("x", joueur, thread_name)
                         elif jeux.robots[item].symbole == "x":
@@ -175,10 +168,9 @@ def main():
         else:
             joueur = "joueur1"
             jeux.ajouter_robot("X", joueur, thread_name)
-
         # Créer un nouvel objet thread pour gérer la connexion :
-        th.joueur = joueur
-        th.start()
+        th_client.joueur = joueur
+        th_client.start()
         # Mémoriser la connexion dans le dictionnaire :
         conn_client[thread_name] = connexion
         print("Client %s connecté, adresse IP %s, port %s." %\
@@ -188,6 +180,6 @@ def main():
         msg = msg + jeux.carte.afficher_carte()
         #message de bienvenue sur le serveur
         connexion.send(msg.encode("Utf8"))
-    
+
 if __name__ == '__main__':
     main()

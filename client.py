@@ -58,50 +58,48 @@ class ThreadEmission(threading.Thread):
         return 'Afficher l\'aide'
 
     def _nord(self):
-        message_emis = "ordr:{},move,0,-1".format(self.client_name.get_thread_name())
+        step_x, step_y = self.convert_cardinalite('N')
+        message_emis = "ordr:{},move,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
     def _est(self):
-        message_emis = "ordr:{},move,1,0".format(self.client_name.get_thread_name())
+        step_x, step_y = self.convert_cardinalite('E')
+        message_emis = "ordr:{},move,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
     def _sud(self):
-        message_emis = "ordr:{},move,0,1".format(self.client_name.get_thread_name())
+        step_x, step_y = self.convert_cardinalite('S')
+        message_emis = "ordr:{},move,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
     def _ouest(self):
-        message_emis = "ordr:{},move,-1,0".format(self.client_name.get_thread_name())
+        step_x, step_y = self.convert_cardinalite('O')
+        message_emis = "ordr:{},move,,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
-    def _murer(self):
-        if self.direction == 'N':
+    def convert_cardinalite(self, direction):
+        """Conver les cardinalité en x et y"""
+        if direction == 'N':
             step_x = -1
             step_y = 0
-        if self.direction == 'E':
+        if direction == 'E':
             step_x = 0
             step_y = 1
-        if self.direction == 'S':
+        if direction == 'S':
             step_x = 1
             step_y = 0
-        if self.direction == 'O':
+        if direction == 'O':
             step_x = 0
             step_y = -1
-        message_emis = "ordr:{},build,M,{},{}".format(self.client_name.get_thread_name(), step_y , step_x)
+        return  step_x, step_y
+
+    def _murer(self):
+        step_x, step_y = self.convert_cardinalite(self.direction)
+        message_emis = "ordr:{},build,M,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
     def _percer(self):
-        if self.direction == 'N':
-            step_x = -1
-            step_y = 0
-        if self.direction == 'E':
-            step_x = 0
-            step_y = 1
-        if self.direction == 'S':
-            step_x = 1
-            step_y = 0
-        if self.direction == 'O':
-            step_x = 0
-            step_y = -1
+        step_x, step_y = self.convert_cardinalite(self.direction)
         message_emis = "ordr:{},build,P,{},{}".format(self.client_name.get_thread_name(), step_y , step_x)
         return message_emis
 

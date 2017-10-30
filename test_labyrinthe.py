@@ -5,7 +5,7 @@
 import unittest
 from carte import Carte
 
-class labyrinthe(unittest.TestCase):
+class Labyrinthe(unittest.TestCase):
     """proceédure de test """
     def setUp(self):
         #simulation d'une grille pour instancier un carte
@@ -14,6 +14,8 @@ class labyrinthe(unittest.TestCase):
     def test_obtenir_position(self):
         """Testing mouvement de carte"""
         carte = Carte('test', self.grille)
-        x, y = carte.robot_positiont_depart()
-        self.assertEqual(x, 8)
-        self.assertEqual(y, 3)
+        x_pos, y_pos = carte.robot_positiont_depart()
+        self.assertEqual(x_pos, 8)
+        self.assertEqual(y_pos, 3)
+
+    

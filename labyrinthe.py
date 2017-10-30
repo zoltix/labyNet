@@ -3,10 +3,8 @@
          Ce fichier contient le code principal du jeu...
 """
 import os
-import time
 import sys
 import pickle
-import re
 from carte import Carte
 from obstacle import Obstacle
 from robot import Robot
@@ -73,7 +71,6 @@ class Labyrinthe:
                     == Obstacle.collection_obstacle.get("O").symbole:
             self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
                                     = Obstacle.collection_obstacle.get(".").symbole
-
 
     def move(self, step_x, step_y, joueur):
         """ to expose the methode mouvement (pour conserver le code d
