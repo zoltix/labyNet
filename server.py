@@ -64,8 +64,16 @@ class ThreadClient(threading.Thread):
                         self.send_message("c'est est pas ton tour" , thread_name)
                     else:
                         lst_ordr = msg_client[4:].split(',')
-                        self.jeux.move(int(lst_ordr[1]), int(lst_ordr[2]), self.joueur)
-                        self.jeux.dernier_joueur = self.joueur
+                        if lst_ordr[1] == 'move':
+                            self.jeux.move(int(lst_ordr[2]), int(lst_ordr[3]), self.joueur)
+                            self.jeux.dernier_joueur = self.joueur
+                        if lst_ordr[1] == 'build':
+                            if lst_ordr[2] == 'M': 
+                                self.jeux.porteEnMur(lst_ordr[3], self.joueur)
+                            if lst_ordr[2] == 'P':
+                                self.jeux.porteEnMur(lst_ordr[3], self.joueur)
+
+                            self.jeux.dernier_joueur = self.joueur
                         #x= lst_ordr[1]
                         #y= lst_ordr[2]
                         self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)

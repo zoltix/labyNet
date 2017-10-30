@@ -14,6 +14,8 @@ class ThreadReception(threading.Thread):
         self.client_name = CLIEN_NANE
         self.connexion = conn	     # réf. du socket de connexion
         self.terminated = False
+        self.directionion =''
+        self.commande = ''
     @staticmethod
     def clear():
         """Statique methode pour netoyer l'écran"""
@@ -56,19 +58,27 @@ class ThreadEmission(threading.Thread):
         return 'Afficher l\'aide'
 
     def _nord(self):
-        message_emis = "ordr:{},0,-1".format(self.client_name.get_thread_name())
+        message_emis = "ordr:{},move,0,-1".format(self.client_name.get_thread_name())
         return message_emis
 
     def _est(self):
-        message_emis = "ordr:{},1,0".format(self.client_name.get_thread_name())
+        message_emis = "ordr:{},move,1,0".format(self.client_name.get_thread_name())
         return message_emis
 
     def _sud(self):
-        message_emis = "ordr:{},0,1".format(self.client_name.get_thread_name())
+        message_emis = "ordr:{},move,0,1".format(self.client_name.get_thread_name())
         return message_emis
 
     def _ouest(self):
-        message_emis = "ordr:{},-1,0".format(self.client_name.get_thread_name())
+        message_emis = "ordr:{},move,-1,0".format(self.client_name.get_thread_name())
+        return message_emis
+
+    def _murer(self):
+        message_emis = "ordr:{},build,{},{}".format(self.client_name.get_thread_name(), self.commande, self.directionion)
+        return message_emis
+
+    def _percer(self):
+        message_emis = "ordr:{},build,{},{}".format(self.client_name.get_thread_name(), self.commande, self.directionion)
         return message_emis
 
     def _quitter(self):
@@ -88,21 +98,21 @@ class ThreadEmission(threading.Thread):
 
         while not self.terminated:
             key = ""
-            exp = r"^([\d]*)([NESOQH])$"
+            exp = r"^([PMNESOQH])([NESO]?)$"
             reg = re.compile(exp)
             while reg.search(key) is None:
                 key = (input("Commade (H)elp:")).upper()
-            _nombre_de_pas = reg.match(key).group(1)
-            if _nombre_de_pas == '':
-                nombre_de_pas = 1
-            else:
-                nombre_de_pas = int(_nombre_de_pas)
-            _commande = reg.match(key).group(2)
+            _direction = reg.match(key).group(2)
+            self.directionion = _direction
+            _commande = reg.match(key).group(1)
+            self.commande = _commande
             switch_dict = { #equivalent switch en C
                 'N':self._nord,
                 'E':self._est,
                 'S':self._sud,
                 'O':self._ouest,
+                'M':self._murer,
+                'P':self._percer,
                 'Q':self._quitter,
                 'H':self._help
             }

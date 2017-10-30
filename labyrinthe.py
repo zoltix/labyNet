@@ -57,6 +57,15 @@ class Labyrinthe:
         """"Remove robot"""
         self.carte.grille[self.robots[joueur].position_y][self.robots[joueur].position_x] = ' '
         self.robots.pop(joueur)
+    
+    def porte_en_mur(self, direction, joueur):
+        """"transforme porte en mur"""
+        pass
+
+    def mur_en_porte(self, direction, joueur):
+        """"transforme mur en porte """
+        
+        pass 
 
     def move(self, step_x, step_y, joueur):
         """ to expose the methode mouvement (pour conserver le code d
@@ -121,71 +130,4 @@ class Labyrinthe:
             ret = mon_depickler.load()
             return ret
 
-    def _help(self):
-        """Afficher l'aide"""
-        #self.carte.afficher_carte()
-        return 5
     
-    def _nord(self):
-        return self._move(step_x=0, step_y=-1)
-
-    def _est(self):
-        return self._move(step_x=1, step_y=0)
-
-    def _sud(self):
-        return self._move(step_x=0, step_y=1)
-
-    def _ouest(self):
-        return self._move(step_x=-1, step_y=0)
-
-    def _quitter(self):
-        return 3 #on retourne le code voir _STATUS_Mouvement
-
-    def _defaut(self):
-        return 4
-
-    def start(self):
-        """Debut ou continue la partie"""
-        #test = Obstacle.collection_obstacle.get(" ")t
-        #xxx = test.bloquant
-        #test = Obstacle.collection_obstacle.get("0")
-        #xxx = test.bloquant
-        self.carte.afficher_carte()
-        while True:
-            key = ""
-            exp = r"^([\d]*)([NESOQH])$"
-            reg = re.compile(exp)
-            while reg.search(key) is None:
-                key = (input("Commade (H)elp:")).upper()
-            _nombre_de_pas = reg.match(key).group(1)
-            if _nombre_de_pas == '':
-                nombre_de_pas = 1
-            else:
-                nombre_de_pas = int(_nombre_de_pas)
-            _commande = reg.match(key).group(2)
-            os.system('cls')
-            #if key in "NESOQH" and len(key) > 0 and len(key) <= 1:
-            switch_dict = { #equivalent switch en C
-                'N':self._nord,
-                'E':self._est,
-                'S':self._sud,
-                'O':self._ouest,
-                'Q':self._quitter,
-                'H':self._help
-            }
-            func = switch_dict.get(_commande, self._defaut) # avec valeur par defaut
-            for x in range(nombre_de_pas):
-                #self.clear()
-                os.system('cls')
-                result = func()
-                self.carte.afficher_carte()
-                #stope la boucle dans le cas que le mouvement est annulé(mur,...)
-                if result >= 1:
-                    break # c'est la fin du pas à pas
-                #Pour un genre de petite animationS
-                if x > 0:
-                    time.sleep(0.5)
-            print("{}".format(Labyrinthe._STATUS_Mouvement[result]))
-            if result == 3 or result == 2:
-                break # c'est la fin du jeux
-        return
