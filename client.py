@@ -103,6 +103,11 @@ class ThreadEmission(threading.Thread):
         message_emis = "ordr:{},build,P,{},{}".format(self.client_name.get_thread_name(), step_y , step_x)
         return message_emis
 
+    def _commencer(self):
+        message_emis = "ordr:{},C".format(self.client_name.get_thread_name())
+        return message_emis
+
+
     def _quitter(self):
         return "FIN" #on retourne le code voir _STATUS_Mouvement
 
@@ -120,7 +125,7 @@ class ThreadEmission(threading.Thread):
 
         while not self.terminated:
             key = ""
-            exp = r"^([PMNESOQH])([NESO]?)$"
+            exp = r"^([CPMNESOQH])([NESO]?)$"
             reg = re.compile(exp)
             while reg.search(key) is None:
                 key = (input("Commade (H)elp:")).upper()
@@ -129,6 +134,7 @@ class ThreadEmission(threading.Thread):
             _commande = reg.match(key).group(1)
             self.commande = _commande
             switch_dict = { #equivalent switch en C
+                'C':self._commencer,
                 'N':self._nord,
                 'E':self._est,
                 'S':self._sud,

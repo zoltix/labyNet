@@ -58,11 +58,16 @@ class ThreadClient(threading.Thread):
                     self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
+                    lst_ordr = msg_client[4:].split(',')
+                    if lst_ordr[1] == 'C':
+                        #debut de partie
+                        self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
                     if self.jeux.dernier_joueur == self.joueur:
+                        #tente de jouer a la place de qlq d'autre
                         self.send_message("c'est est pas ton tour", thread_name)
                     else:
-                        lst_ordr = msg_client[4:].split(',')
                         if lst_ordr[1] == 'move':
+                            #on bouge le robot
                             self.jeux.move(int(lst_ordr[2]), int(lst_ordr[3]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
                         if lst_ordr[1] == 'build':
@@ -176,8 +181,8 @@ def main():
         print("Client %s connecté, adresse IP %s, port %s." %\
             (thread_name, adresse[0], adresse[1]))
         # Dialogue avec le client :
-        msg = "Vous êtes connecté. Envoyez vos messages.\n"
-        msg = msg + jeux.carte.afficher_carte()
+        msg = "Vous êtes connecté. Appuyé sur C pour commencer\n"
+        #msg = msg + jeux.carte.afficher_carte()
         #message de bienvenue sur le serveur
         connexion.send(msg.encode("Utf8"))
 
