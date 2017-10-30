@@ -29,7 +29,7 @@ class Labyrinthe:
                             '(S) déplacer vers le sud\n'\
                             '(O) déplacer vers l\'ouest\n'\
                             '(Q) sauvegarder et quitter\n'\
-                            '*(1-10)(N|E|S|O) plusieurs steps \n ex: (5N) bouge 5 fois vers le nord'}
+                            '*(1-10)(N|E|S|O) plusieurs steps \n ex:(5N) bouge 5 fois vers le nord'}
 
     def __init__(self, carte):
         """Avec un robot en stand alone"""
@@ -46,7 +46,7 @@ class Labyrinthe:
         self.dernier_joueur = ""
 
     #@classmethod
-    #def 
+    #def
     def ajouter_robot(self, symbole, joueur, thread_name):
         """ Ajourter un robot """
         x, y = self.carte.robot_random_position(symbole) #make a random posisition
