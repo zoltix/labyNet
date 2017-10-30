@@ -6,7 +6,7 @@
 class Mur():
     "Class définition du Mur"
     name = 'Mur'
-    symbole = 'o'
+    symbole = 'O'
     bloquant = True
     fin = False
     description = 'ne peut être traversé'

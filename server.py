@@ -69,9 +69,9 @@ class ThreadClient(threading.Thread):
                             self.jeux.dernier_joueur = self.joueur
                         if lst_ordr[1] == 'build':
                             if lst_ordr[2] == 'M': 
-                                self.jeux.porteEnMur(lst_ordr[3], self.joueur)
+                                self.jeux.porte_en_mur(int(lst_ordr[3]),int(lst_ordr[4]), self.joueur)
                             if lst_ordr[2] == 'P':
-                                self.jeux.porteEnMur(lst_ordr[3], self.joueur)
+                                self.jeux.mur_en_porte(int(lst_ordr[3]),int(lst_ordr[4]), self.joueur)
 
                             self.jeux.dernier_joueur = self.joueur
                         #x= lst_ordr[1]

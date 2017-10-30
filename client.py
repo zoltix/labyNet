@@ -14,8 +14,6 @@ class ThreadReception(threading.Thread):
         self.client_name = CLIEN_NANE
         self.connexion = conn	     # réf. du socket de connexion
         self.terminated = False
-        self.directionion =''
-        self.commande = ''
     @staticmethod
     def clear():
         """Statique methode pour netoyer l'écran"""
@@ -48,6 +46,8 @@ class ThreadEmission(threading.Thread):
         threading.Thread.__init__(self)
         self.connexion = conn	     # réf. du socket de connexion
         self.terminated = False
+        self.direction =''
+        self.commande = ''
     def stop(self):
         """fin de la thread """
         self.terminated = True
@@ -74,11 +74,35 @@ class ThreadEmission(threading.Thread):
         return message_emis
 
     def _murer(self):
-        message_emis = "ordr:{},build,{},{}".format(self.client_name.get_thread_name(), self.commande, self.directionion)
+        if self.direction == 'N':
+            step_x = -1
+            step_y = 0
+        if self.direction == 'E':
+            step_x = 0
+            step_y = 1
+        if self.direction == 'S':
+            step_x = 1
+            step_y = 0
+        if self.direction == 'O':
+            step_x = 0
+            step_y = -1
+        message_emis = "ordr:{},build,M,{},{}".format(self.client_name.get_thread_name(), step_y , step_x)
         return message_emis
 
     def _percer(self):
-        message_emis = "ordr:{},build,{},{}".format(self.client_name.get_thread_name(), self.commande, self.directionion)
+        if self.direction == 'N':
+            step_x = -1
+            step_y = 0
+        if self.direction == 'E':
+            step_x = 0
+            step_y = 1
+        if self.direction == 'S':
+            step_x = 1
+            step_y = 0
+        if self.direction == 'O':
+            step_x = 0
+            step_y = -1
+        message_emis = "ordr:{},build,P,{},{}".format(self.client_name.get_thread_name(), step_y , step_x)
         return message_emis
 
     def _quitter(self):
@@ -103,7 +127,7 @@ class ThreadEmission(threading.Thread):
             while reg.search(key) is None:
                 key = (input("Commade (H)elp:")).upper()
             _direction = reg.match(key).group(2)
-            self.directionion = _direction
+            self.direction = _direction
             _commande = reg.match(key).group(1)
             self.commande = _commande
             switch_dict = { #equivalent switch en C

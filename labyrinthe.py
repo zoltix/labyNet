@@ -58,14 +58,22 @@ class Labyrinthe:
         self.carte.grille[self.robots[joueur].position_y][self.robots[joueur].position_x] = ' '
         self.robots.pop(joueur)
     
-    def porte_en_mur(self, direction, joueur):
+    def porte_en_mur(self, step_x, step_y, joueur):
         """"transforme porte en mur"""
-        pass
+        #check if porte
+        if self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+                == Obstacle.collection_obstacle.get(".").symbole:
+            self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+                                    = Obstacle.collection_obstacle.get("O").symbole
 
-    def mur_en_porte(self, direction, joueur):
+    def mur_en_porte(self, step_x, step_y, joueur):
         """"transforme mur en porte """
-        
-        pass 
+        #check if mur
+        if self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+                    == Obstacle.collection_obstacle.get("O").symbole:
+            self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+                                    = Obstacle.collection_obstacle.get(".").symbole
+
 
     def move(self, step_x, step_y, joueur):
         """ to expose the methode mouvement (pour conserver le code d
