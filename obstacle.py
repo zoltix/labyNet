@@ -43,6 +43,15 @@ class Robot():
     fin = False
     description = 'Robot Himself'
 
+class Robot2():
+    "Class définition du Robot"
+    name = 'Robot'
+    symbole = 'x'
+    bloquant = True
+    fin = False
+    description = 'Robot Himself'
+
 class Obstacle(object):
     "Class genérique Obstacle juste a but d'apprentissage"
-    collection_obstacle = {"O":Mur(), ".":Porte(), "U":Sortie(), " ":Rien(), "X":Robot()}
+    collection_obstacle = {"O":Mur(), ".":Porte(), "U":Sortie(), \
+     " ":Rien(), "X":Robot(), "x":Robot()}

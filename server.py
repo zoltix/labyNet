@@ -47,6 +47,7 @@ class ThreadClient(threading.Thread):
     def run(self):
       # Dialogue avec le client :
         thread_name = self.getName()	    # Chaque thread possède un thread_name
+        ret_status = 0
         try:
             while 1:
                 #reception du message
@@ -76,13 +77,13 @@ class ThreadClient(threading.Thread):
                     else:
                         if lst_ordr[1] == 'move':
                             #on bouge le robot
-                            self.jeux.move(int(lst_ordr[2]), int(lst_ordr[3]), self.joueur)
+                            ret_status = self.jeux.move(int(lst_ordr[2]), int(lst_ordr[3]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
                         if lst_ordr[1] == 'build':
                             if lst_ordr[2] == 'M':
-                                self.jeux.porte_en_mur(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
+                                ret_status =  self.jeux.porte_en_mur(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             if lst_ordr[2] == 'P':
-                                self.jeux.mur_en_porte(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
+                                ret_status =  self.jeux.mur_en_porte(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
                         self.broadcast(self.jeux.carte.afficher_carte() + "\n A votre tour", False, thread_name)
                         self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
@@ -91,6 +92,10 @@ class ThreadClient(threading.Thread):
                     print(message)
                     # Faire suivre le message à tous les autres clients :
                     #self.broadcast(msg_client, True, thread_name)
+                if ret_status == 2: 
+                    self.broadcast("------------------Vous avez perdu FIN de partie----------------", False, thread_name)
+                    self.send_message("************Vous avez gagné!! FIN de partie*************", thread_name)
+                    #break
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
             self.jeux.enlever_robot(self.joueur)

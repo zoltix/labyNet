@@ -29,7 +29,7 @@ class ThreadReception(threading.Thread):
             ThreadReception.clear()
             print(message_recu)
             print("(H) pour afficher l'aide ou commande pour un déplacement:")
-            if not message_recu or message_recu.upper() == "FIN":
+            if not message_recu or message_recu.upper() == "FIN" or message_recu.find(' FIN ') != -1 :
                 break
             if message_recu.upper().startswith("WHOIM:"):
                 self.client_name.set_thread_name(message_recu[6:])
@@ -38,6 +38,7 @@ class ThreadReception(threading.Thread):
         print("Client arrêté. Connexion interrompue.")
         self.connexion.close()
         self.stop()
+        sys.exit(0)
 
 class ThreadEmission(threading.Thread):
     """objet thread gérant l'émission des messages"""
