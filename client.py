@@ -9,27 +9,26 @@ from paramThread import ParamThread
 
 class ThreadReception(threading.Thread):
     """objet thread gérant la réception des messages"""
-    def __init__(self, conn, CLIEN_NANE):
+    def __init__(self, conn, CLIENT_NANE):
         threading.Thread.__init__(self)
-        self.client_name = CLIEN_NANE
+        self.client_name = CLIENT_NANE
         self.connexion = conn	     # réf. du socket de connexion
-        self.terminated = False
+        #self.terminated = False
     @staticmethod
     def clear():
         """Statique methode pour netoyer l'écran"""
         os.system('cls')
     def stop(self):
         """fin de la thread """
-        self.terminated = True
+        self.client_name.terminated = True
     def run(self):
-        while not self.terminated:
+        while not self.client_name.terminated:
             message_recu = self.connexion.recv(1024).decode("Utf8")
-            #print(self.client_name.get_thread_name())
-            #os.system('cls')
             ThreadReception.clear()
             print(message_recu)
             print("(H) pour afficher l'aide ou commande pour un déplacement:")
-            if not message_recu or message_recu.upper() == "FIN" or message_recu.find(' FIN ') != -1 :
+            if not message_recu or message_recu.upper() == "FIN" or message_recu.find(' FIN ') != -1:
+                self.client_name.terminated = True
                 break
             if message_recu.upper().startswith("WHOIM:"):
                 self.client_name.set_thread_name(message_recu[6:])
@@ -47,12 +46,12 @@ class ThreadEmission(threading.Thread):
         self.client_name = CLIEN_NANE
         threading.Thread.__init__(self)
         self.connexion = conn	     # réf. du socket de connexion
-        self.terminated = False
+        #self.terminated = False
         self.direction =''
         self.commande = ''
     def stop(self):
         """fin de la thread """
-        self.terminated = True
+        self.client_name.terminated = True
 
     def _help(self):
         """Afficher l'aide"""
@@ -126,12 +125,12 @@ class ThreadEmission(threading.Thread):
     def run(self):
         #self._whoim()
 
-        while not self.terminated:
+        while not self.client_name.terminated:
             key = ""
             exp = r"^([CPMNESOQH])([NESO]?)$"
             reg = re.compile(exp)
             while reg.search(key) is None:
-                key = (input("Commade (H)elp:")).upper()
+                key = (input("Commade (Q)uitter:")).upper()
             _direction = reg.match(key).group(2)
             self.direction = _direction
             _commande = reg.match(key).group(1)
@@ -147,6 +146,9 @@ class ThreadEmission(threading.Thread):
                 'Q':self._quitter,
                 'H':self._help
             }
+            if self.client_name.terminated:
+                self.stop()
+                break
             func = switch_dict.get(_commande, self._defaut) # avec valeur par defaut
             message_emis = func()
             #message_emis = input()

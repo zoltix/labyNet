@@ -7,6 +7,7 @@ class ParamThread:
     """ class pour partager les paramètre entre les """
     def __init__(self, thread_name):
         self.set_thread_name(thread_name)
+        self.terminated = False
         #self.set_dernier_joueur("")
     @classmethod
     def construct_by_name_thread(cls, thread_name):
