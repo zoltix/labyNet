@@ -56,13 +56,21 @@ class ThreadClient(threading.Thread):
                 if msg_client.upper() == "WHOIM":
                     self.send_message(("whoim:"+thread_name), thread_name)
                     self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
+                if msg_client.startswith('help'):
+                     self.send_message(self.jeux.get_help(), thread_name) 
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
                     lst_ordr = msg_client[4:].split(',')
                     if lst_ordr[1] == 'C':
                         #debut de partie
-                        self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
-                    if self.jeux.dernier_joueur == self.joueur:
+                        #et rafraichissement de la console
+                        if self.jeux.dernier_joueur == self.joueur:
+                            self.broadcast(self.jeux.carte.afficher_carte() + "\n A votre tour", False, thread_name)
+                            self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
+                        else:
+                           self.broadcast(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", False, thread_name)
+                           self.send_message(self.jeux.carte.afficher_carte() + "\n A votre tour", thread_name)
+                    elif self.jeux.dernier_joueur == self.joueur:
                         #tente de jouer a la place de qlq d'autre
                         self.send_message("c'est est pas ton tour", thread_name)
                     else:
@@ -76,7 +84,8 @@ class ThreadClient(threading.Thread):
                             if lst_ordr[2] == 'P':
                                 self.jeux.mur_en_porte(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
-                        self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
+                        self.broadcast(self.jeux.carte.afficher_carte() + "\n A votre tour", False, thread_name)
+                        self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
                 else:
                     message = "%s> %s" % (thread_name, msg_client)
                     print(message)
@@ -104,7 +113,7 @@ def main():
         print("La liaison du socket à l'adresse choisie a échoué.")
         sys.exit()
     print("Serveur prêt, en attente de requêtes ...")
-    my_socket.listen(5)
+    my_socket.listen(5) 
 
     #choisir la carte.
     # On charge les cartes existantes

@@ -24,12 +24,15 @@ class Labyrinthe:
                          2:'Félicitations ! Vous avez gagné !',\
                          3:'A Bientôt, la partie a été savegardé pour plus tard',\
                          4:'Ce n\'est pas la bonne valeur',\
-                         5:'(N) déplacer vers le nord\n'\
+                         5:'(C) Commencer ou afficher carte\n'\
+                            '(N) déplacer vers le nord\n'\
                             '(E) déplacer vers l''est\n'\
                             '(S) déplacer vers le sud\n'\
                             '(O) déplacer vers l\'ouest\n'\
                             '(Q) sauvegarder et quitter\n'\
-                            '*(1-10)(N|E|S|O) plusieurs steps \n ex:(5N) bouge 5 fois vers le nord'}
+                            '(P*) percer une porte a la place d''un mur\n'\
+                            '(M*) construire un mur a la place porte\n'\
+                             '* cardinalité NESO ie: ME or PS\n'}
 
     def __init__(self, carte):
         """Avec un robot en stand alone"""
@@ -47,6 +50,9 @@ class Labyrinthe:
 
     #@classmethod
     #def
+    def get_help(self):
+        """obtenir l'aide"""
+        return Labyrinthe._STATUS_Mouvement.get(5)
     def ajouter_robot(self, symbole, joueur, thread_name):
         """ Ajourter un robot """
         x, y = self.carte.robot_random_position(symbole) #make a random posisition

@@ -28,6 +28,7 @@ class ThreadReception(threading.Thread):
             #os.system('cls')
             ThreadReception.clear()
             print(message_recu)
+            print("(H) pour afficher l'aide ou commande pour un déplacement:")
             if not message_recu or message_recu.upper() == "FIN":
                 break
             if message_recu.upper().startswith("WHOIM:"):
@@ -55,7 +56,8 @@ class ThreadEmission(threading.Thread):
     def _help(self):
         """Afficher l'aide"""
         #self.carte.afficher_carte()
-        return 'Afficher l\'aide'
+        message_emis = 'help:'
+        return message_emis
 
     def _nord(self):
         step_x, step_y = self.convert_cardinalite('N')
