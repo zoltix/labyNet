@@ -146,14 +146,12 @@ class ThreadEmission(threading.Thread):
                 'Q':self._quitter,
                 'H':self._help
             }
-            if self.client_name.terminated:
-                self.stop()
-                break
-            func = switch_dict.get(_commande, self._defaut) # avec valeur par defaut
-            message_emis = func()
-            #message_emis = input()
-            self.connexion.send(func().encode("Utf8"))
-            if message_emis.upper() == "FIN":
+            if not self.client_name.terminated:
+                func = switch_dict.get(_commande, self._defaut) # avec valeur par defaut
+                message_emis = func()
+                #message_emis = input()
+                self.connexion.send(func().encode("Utf8"))
+            if message_emis.upper() == "FIN" or self.client_name.terminated:
                 self.stop()
                 break
 
