@@ -48,3 +48,6 @@ class ProtocoleTest(unittest.TestCase):
         ouest = [0, -1]
         self.assertListEqual(ouest, result)
         connexion.close()
+    def handle(self, socket, address):
+        socket.sendall('hello and goodbye!')
+    

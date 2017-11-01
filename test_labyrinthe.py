@@ -27,4 +27,10 @@ class TestCarte(unittest.TestCase):
         """Testing code de retour"""
         #jeux = Labyrinthe(self.carte)
         self.assertEqual(Labyrinthe._STATUS_Mouvement.get(2), 'Félicitations ! Vous avez gagné !')
+
+    def test_ajout_robot(self):
+        """test d'ajout d'un robot"""
+        jeux = Labyrinthe(self.carte)
+        # Check not thrown une exception
+        jeux.ajouter_robot("X", "joueur", "thread_name")
         

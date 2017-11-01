@@ -58,7 +58,7 @@ class ThreadClient(threading.Thread):
                     self.send_message(("whoim:"+thread_name), thread_name)
                     self.broadcast(self.jeux.carte.afficher_carte(), True, thread_name)
                 if msg_client.startswith('help'):
-                     self.send_message(self.jeux.get_help(), thread_name) 
+                    self.send_message(self.jeux.get_help(), thread_name) 
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
                     lst_ordr = msg_client[4:].split(',')
@@ -69,8 +69,8 @@ class ThreadClient(threading.Thread):
                             self.broadcast(self.jeux.carte.afficher_carte() + "\n A votre tour", False, thread_name)
                             self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
                         else:
-                           self.broadcast(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", False, thread_name)
-                           self.send_message(self.jeux.carte.afficher_carte() + "\n A votre tour", thread_name)
+                            self.broadcast(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", False, thread_name)
+                            self.send_message(self.jeux.carte.afficher_carte() + "\n A votre tour", thread_name)
                     elif self.jeux.dernier_joueur == self.joueur:
                         #tente de jouer a la place de qlq d'autre
                         self.send_message("c'est est pas ton tour", thread_name)
@@ -166,6 +166,7 @@ def main():
         th_client = ThreadClient(connexion, jeux)
         thread_name = th_client.getName()	  # identifiant du thread
         if bool(jeux.robots):
+            nombre_de_robot = 1
             for item in list(jeux.robots):
                 print('************* robot ****************')
                 print('nom du robot {}'.format(item))
@@ -185,6 +186,11 @@ def main():
                             jeux.ajouter_robot("X", joueur, thread_name)
                     else:
                         pass
+                nombre_de_robot += 1
+            if nombre_de_robot > 2: 
+                msg = "Il y a déjà 2 joueurs FIN \n"
+                connexion.send(msg.encode("Utf8"))
+                continue
         else:
             joueur = "joueur1"
             jeux.ajouter_robot("X", joueur, thread_name)
