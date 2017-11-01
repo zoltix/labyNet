@@ -124,7 +124,7 @@ class ThreadEmission(threading.Thread):
 
     def run(self):
         #self._whoim()
-
+        message_emis = ''
         while not self.client_name.terminated:
             key = ""
             exp = r"^([CPMNESOQH])([NESO]?)$"
