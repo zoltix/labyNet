@@ -115,7 +115,7 @@ class Labyrinthe:
                         self.robots[joueur].position_x, self.robots[joueur].position_y  \
                                     = self.robots[joueur].position_x + step_x, self.robots[joueur].position_y + step_y
                         #self.carte.enregistre_partie()
-                        self.enregistrer_labyrinthe()
+                        #self.enregistrer_labyrinthe()
                         return 0 # on retourne on continue voir _STATUS_Mouvement
                     else:
                         return 1 #on retourne on continue voir _STATUS_Mouvement
