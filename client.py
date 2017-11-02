@@ -6,10 +6,15 @@ import sys
 import threading
 import re
 import os
+import platform
 from paramThread import ParamThread
 
 class ThreadReception(threading.Thread):
     """objet thread gérant la réception des messages"""
+    if platform.system() == 'Windows':
+        CLEAR = lambda: os.system('cls')
+    if platform.system() == 'Linux':
+        CLEAR = lambda: os.system('clear')
     def __init__(self, conn, CLIENT_NANE):
         threading.Thread.__init__(self)
         self.client_name = CLIENT_NANE
@@ -18,7 +23,7 @@ class ThreadReception(threading.Thread):
     @staticmethod
     def clear():
         """Statique methode pour netoyer l'écran"""
-        os.system('cls')
+        ThreadReception.CLEAR()
     def stop(self):
         """fin de la thread """
         self.client_name.terminated = True
@@ -42,7 +47,11 @@ class ThreadReception(threading.Thread):
 
 class ThreadEmission(threading.Thread):
     """objet thread gérant l'émission des messages"""
-    clear = lambda: os.system('cls') #clear console peut être creer une classe outil
+    if platform.system() == 'Windows':
+        CLEAR = lambda: os.system('cls')
+    if platform.system() == 'Linux':
+        CLEAR = lambda: os.system('clear')
+ #clear console peut être creer une classe outil
     def __init__(self, conn, CLIEN_NANE):
         self.client_name = CLIEN_NANE
         threading.Thread.__init__(self)

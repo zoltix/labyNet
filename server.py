@@ -8,10 +8,15 @@ import sys
 import threading
 import os
 import re
+import platform
 from carte import Carte
 from labyrinthe import Labyrinthe
 
-CLEAR = lambda: os.system('cls')
+if platform.system() == 'Windows':
+    CLEAR = lambda: os.system('cls')
+if platform.system() == 'Linux':
+    CLEAR = lambda: os.system('clear')
+
 HOST = '127.0.01'
 PORT = 46000
 CONN_CLIENT = {}	# dictionnaire des connexions clients
