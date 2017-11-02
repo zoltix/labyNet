@@ -1,4 +1,5 @@
-﻿# -*-coding:Utf-8 -*
+﻿#! /usr/bin/env python3
+# -*-coding:Utf-8 -*
 """Module qui est le serveur de mon application"""
 import socket
 import sys
