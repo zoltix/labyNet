@@ -77,7 +77,7 @@ class ThreadEmission(threading.Thread):
 
     def _ouest(self):
         step_x, step_y = self.convert_cardinalite('O')
-        message_emis = "ordr:{},move,,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
+        message_emis = "ordr:{},move,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
     def convert_cardinalite(self, direction):
