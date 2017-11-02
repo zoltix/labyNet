@@ -94,7 +94,7 @@ class Labyrinthe:
                 and (self.robots[joueur].position_x + step_x) >= 0:
                     if Obstacle.collection_obstacle.get( \
                         self.carte.grille[self.robots[joueur].position_y+ step_y][self.robots[joueur].position_x + step_x]).fin:
-                        os.remove(self._chemin)
+                        #os.remove(self._chemin)
                         return 2 #on retourne  c'est fini voir _STATUS_Mouvement
                         #delete fichier de sauvegarde
                     else:
