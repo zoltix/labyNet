@@ -208,7 +208,7 @@ def main():
         print("Client %s connecté, adresse IP %s, port %s." %\
             (thread_name, adresse[0], adresse[1]))
         # Dialogue avec le client :
-        msg = "Vous êtes connecté. Appuyé sur C pour commencer\n"
+        msg = "Bienveun joueur {} avec symbole {} \n Vous êtes connecté au serveur. \nAppuyé sur C pour commencer\n".format(joueur, jeux.robots[joueur].symbole)
         #msg = msg + jeux.carte.afficher_carte()
         #message de bienvenue sur le serveur
         connexion.send(msg.encode("Utf8"))
