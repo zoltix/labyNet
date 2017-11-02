@@ -29,7 +29,7 @@ class ThreadReception(threading.Thread):
         self.client_name.terminated = True
     def run(self):
         while not self.client_name.terminated:
-            message_recu = self.connexion.recv(1024).decode("Utf8")
+            message_recu = self.connexion.recv(2048).decode("Utf8")
             ThreadReception.clear()
             print(message_recu)
             print("(H) pour afficher l'aide ou commande pour un déplacement:")
