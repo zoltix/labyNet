@@ -57,7 +57,7 @@ class ThreadClient(threading.Thread):
         try:
             while 1:
                 #reception du message
-                msg_client = self.connexion.recv(1024).decode("Utf8")
+                msg_client = self.connexion.recv(2048).decode("Utf8")
                 if not msg_client or msg_client.upper() == "FIN":
                     break
                 if msg_client.upper() == "WHOIM":
@@ -99,8 +99,23 @@ class ThreadClient(threading.Thread):
                     # Faire suivre le message à tous les autres clients :
                     #self.broadcast(msg_client, True, thread_name)
                 if ret_status == 2: 
-                    self.broadcast("------------------Vous avez perdu FIN de partie----------------", False, thread_name)
-                    self.send_message("************Vous avez gagné!! FIN de partie*************", thread_name)
+                    self.broadcast( "                      \n"
+                                +"██████╗█████████████╗██████╗██╗   ██╗   \n" 
+                                +"██╔══████╔════██╔══████╔══████║   ██║   \n" 
+                                +"██████╔█████╗ ██████╔██║  ████║   ██║   \n" 
+                                +"██╔═══╝██╔══╝ ██╔══████║  ████║   ██║   \n" 
+                                +"██║    █████████║  ████████╔╚██████╔╝   \n" 
+                                +"╚═╝    ╚══════╚═╝  ╚═╚═════╝ ╚═════╝    \n" 
+                                +"                 \n"
+                                +" FIN ", False, thread_name)
+                    self.send_message("                                 \n" 
+                            +" ██████╗ █████╗ ██████╗███╗   █████████╗ \n"
+                            +"██╔════╝██╔══████╔════╝████╗  ████╔════╝ \n"
+                            +"██║  ████████████║  █████╔██╗ ███████╗   \n"
+                            +"██║   ████╔══████║   ████║╚██╗████╔══╝   \n"
+                            +"╚██████╔██║  ██╚██████╔██║ ╚███████████╗ \n"
+                            +" ╚═════╝╚═╝  ╚═╝╚═════╝╚═╝  ╚═══╚══════╝ \n"
+                            +" FIN ", thread_name)
                     #break
             # Fermeture de la connexion :
             self.connexion.close()	  # couper la connexion côté serveur
