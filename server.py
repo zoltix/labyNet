@@ -179,6 +179,14 @@ def main():
             jeux = jeux.restaurer_labyrinthe()
         #Début du jeux
     # Attente et prise en charge des connexions demandées par les clients :
+    print(""
+             " __                                                             \n"
+            +"/ _\  ___  _ __ __   __ ___  _ __  _   _  _ __   /\ /\  _ __   \n"
+            +"\ \  / _ \| '__|\ \ / // _ \| '__|| | | || '__| / / \ \| '_ \  \n" 
+            +"_\ \|  __/| |    \ V /|  __/| |   | |_| || |    \ \_/ /| |_) | \n"
+            +"\__/ \___||_|     \_/  \___||_|    \__,_||_|     \___/ | .__/  \n"
+            +"_                                                              \n" 
+  )
     while 1:
         #attendre de la connexion
         connexion, adresse = my_socket.accept()
