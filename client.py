@@ -10,7 +10,7 @@ import platform
 from paramThread import ParamThread
 
 class ThreadReception(threading.Thread):
-    """objet thread gérant la réception des messages"""
+    """objet thread gérant la réception des messages avec compatibilite linux et windows"""
     if platform.system() == 'Windows':
         CLEAR = lambda: os.system('cls')
     if platform.system() == 'Linux':

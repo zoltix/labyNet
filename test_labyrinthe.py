@@ -3,6 +3,7 @@
     module de test pour la classe labyrinthe
  """
 import unittest
+import random
 from carte import Carte
 from labyrinthe import Labyrinthe
 
@@ -33,4 +34,21 @@ class TestCarte(unittest.TestCase):
         jeux = Labyrinthe(self.carte)
         # Check not thrown une exception
         jeux.ajouter_robot("X", "joueur", "thread_name")
+ 
+    def test_move(self):
+        """ test le mouvement d'un robot """
+        jeux = Labyrinthe(self.carte)
+        jeux.ajouter_robot("X", "joueur", "thread_name")
+        resultat_attendue = list(range(0,3))
+        for x in range(1, 100):
+            step_x = random.randint(-1, 1)
+            for y in range(1, 100):
+                step_y = random.randint(-1, 1)
+                ret = jeux.move(step_x, step_y, "joueur")
+                self.assertIn(ret, resultat_attendue)
+
+
+
+                
+        
         
