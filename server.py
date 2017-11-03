@@ -28,7 +28,7 @@ class ThreadClient(threading.Thread):
         self.connexion = conn
         self.jeux = jeux
         self.joueur = ""
-    def broadcast(self, message, soi_meme, client_name):
+    def broadcast(self, message, soi_meme, thread_name):
         """permet d'envoyer un messaga au client
            message = message
            soi_même similaire a un echo
@@ -36,18 +36,18 @@ class ThreadClient(threading.Thread):
         """
         try:
             for cle in CONN_CLIENT:
-                if cle != client_name or soi_meme:  # ne pas le renvoyer à l'émetteur
+                if cle != thread_name or soi_meme:  # ne pas le renvoyer à l'émetteur
                     message_a_envoyer = message #+"\n"+self.jeux.carte.afficher_carte()
                     CONN_CLIENT[cle].send(message_a_envoyer.encode("Utf8"))
 
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
             #self.jeux.robots.pop(self.joueur)  pas correcte
-            del CONN_CLIENT[client_name]	# supprimer son entrée dans le dictionnaire
-    def send_message(self, message, client_name):
+            del CONN_CLIENT[thread_name]	# supprimer son entrée dans le dictionnaire
+    def send_message(self, message, thread_name):
         """envoie un message uniquement a un clien"""
         #message = message +"\n"+self.carte.afficher_carte()
-        CONN_CLIENT[client_name].send(message.encode("Utf8"))
+        CONN_CLIENT[thread_name].send(message.encode("Utf8"))
     def _whoim(self):
         return "whoim"
     def run(self):
@@ -69,29 +69,30 @@ class ThreadClient(threading.Thread):
                     #""" action dans le labyrinthe"""
                     lst_ordr = msg_client[4:].split(',')
                     if lst_ordr[1] == 'C':
-                        #debut de partie
-                        #et rafraichissement de la console
+                        #et rafraichissement de la console et début de partie
                         if self.jeux.dernier_joueur == self.joueur:
-                            self.broadcast(self.jeux.carte.afficher_carte() + "\n A votre tour", False, thread_name)
+                            self.broadcast(self.jeux.carte.afficher_carte() + "\nA votre tour", False, thread_name)
                             self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
                         else:
                             self.broadcast(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", False, thread_name)
-                            self.send_message(self.jeux.carte.afficher_carte() + "\n A votre tour", thread_name)
+                            self.send_message(self.jeux.carte.afficher_carte() + "\nA votre tour", thread_name)
                     elif self.jeux.dernier_joueur == self.joueur:
                         #tente de jouer a la place de qlq d'autre
                         self.send_message("c'est est pas ton tour", thread_name)
                     else:
+                        #mouvement du robot 
                         if lst_ordr[1] == 'move':
                             #on bouge le robot
                             ret_status = self.jeux.move(int(lst_ordr[2]), int(lst_ordr[3]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
                         if lst_ordr[1] == 'build':
-                            if lst_ordr[2] == 'M':
+                            #on construit des murs ou or les détruits!!!
+                            if lst_ordr[2] == 'M': # construit un mur et a la place d'une porte
                                 ret_status =  self.jeux.porte_en_mur(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
-                            if lst_ordr[2] == 'P':
+                            if lst_ordr[2] == 'P': # détruit un mur et on le remplace par une porte 
                                 ret_status =  self.jeux.mur_en_porte(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
-                        self.broadcast(self.jeux.carte.afficher_carte() + "\n A votre tour", False, thread_name)
+                        self.broadcast(self.jeux.carte.afficher_carte() + "\nA votre tour", False, thread_name)
                         self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
                 else:
                     message = "%s> %s" % (thread_name, msg_client)
@@ -181,11 +182,12 @@ def main():
     # Attente et prise en charge des connexions demandées par les clients :
     print(""
              " __                                                             \n"
-            +"/ _\  ___  _ __ __   __ ___  _ __  _   _  _ __   /\ /\  _ __   \n"
-            +"\ \  / _ \| '__|\ \ / // _ \| '__|| | | || '__| / / \ \| '_ \  \n" 
-            +"_\ \|  __/| |    \ V /|  __/| |   | |_| || |    \ \_/ /| |_) | \n"
-            +"\__/ \___||_|     \_/  \___||_|    \__,_||_|     \___/ | .__/  \n"
-            +"_                                                              \n" 
+            +"/ _\  ___  _ __ __   __ ___  _   _  _ __    /\ /\  _ __   \n"
+            +"\ \  / _ \| '__|\ \ / // _ \| | | || '__|  / / \ \| '_ \  \n" 
+            +"_\ \|  __/| |    \ V /|  __/| |_| || |     \ \_/ /| |_) | \n"
+            +"\__/ \___||_|     \_/  \___| \__,_||_|      \___/ | .__/  \n"
+            +"_                                                          \n" 
+            +" On attend les clients.\n" 
   )
     while 1:
         #attendre de la connexion

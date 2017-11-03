@@ -25,14 +25,15 @@ class Labyrinthe:
                          3:'A Bientôt, la partie a été savegardé pour plus tard',\
                          4:'Ce n\'est pas la bonne valeur',\
                          5:'(C) Commencer ou afficher carte\n'\
-                            '(N) déplacer vers le nord\n'\
-                            '(E) déplacer vers l''est\n'\
-                            '(S) déplacer vers le sud\n'\
-                            '(O) déplacer vers l\'ouest\n'\
+                            '(N+) déplacer vers le nord\n'\
+                            '(E+) déplacer vers l''est\n'\
+                            '(S+) déplacer vers le sud\n'\
+                            '(O+) déplacer vers l\'ouest\n'\
                             '(Q) sauvegarder et quitter\n'\
                             '(P*) percer une porte a la place d''un mur\n'\
                             '(M*) construire un mur a la place porte\n'\
-                             '* cardinalité NESO ie: ME or PS\n'}
+                             '* cardinalité NESO ie: ME or PS\n'
+                             '+ nombre de pas se 1 à 10 ie: N4, O1'}
 
     def __init__(self, carte):
         """Avec un robot en stand alone"""

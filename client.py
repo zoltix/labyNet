@@ -7,6 +7,7 @@ import threading
 import re
 import os
 import platform
+import time
 from paramThread import ParamThread
 
 class ThreadReception(threading.Thread):
@@ -30,8 +31,11 @@ class ThreadReception(threading.Thread):
     def run(self):
         while not self.client_name.terminated:
             message_recu = self.connexion.recv(2048).decode("Utf8")
+            if  'A votre tour' in message_recu:                
+                self.client_name.on_peux_jouper = True
             ThreadReception.clear()
             print(message_recu)
+
             print("(H) pour afficher l'aide ou commande pour un déplacement:")
             if not message_recu or message_recu.upper() == "FIN" or message_recu.find(' FIN ') != -1:
                 self.client_name.terminated = True
@@ -134,36 +138,51 @@ class ThreadEmission(threading.Thread):
 
     def run(self):
         #self._whoim()
-        message_emis = ''
-        while not self.client_name.terminated:
-            key = ""
-            exp = r"^([CPMNESOQH])([NESO]?)$"
-            reg = re.compile(exp)
-            while reg.search(key) is None:
-                key = (input("Commade (Q)uitter:")).upper()
-            _direction = reg.match(key).group(2)
-            self.direction = _direction
-            _commande = reg.match(key).group(1)
-            self.commande = _commande
-            switch_dict = { #equivalent switch en C
-                'C':self._commencer,
-                'N':self._nord,
-                'E':self._est,
-                'S':self._sud,
-                'O':self._ouest,
-                'M':self._murer,
-                'P':self._percer,
-                'Q':self._quitter,
-                'H':self._help
-            }
-            if not self.client_name.terminated:
-                func = switch_dict.get(_commande, self._defaut) # avec valeur par defaut
-                message_emis = func()
-                #message_emis = input()
-                self.connexion.send(func().encode("Utf8"))
-            if message_emis.upper() == "FIN" or self.client_name.terminated:
-                self.stop()
-                break
+        try:
+            while not self.client_name.terminated:
+                key = ""
+                exp = r"^([CPMNESOQH])([NESO\d]?)$"
+                reg = re.compile(exp)
+                while reg.search(key) is None:
+                    key = (input("Commade (Q)uitter:")).upper()
+                _direction = reg.match(key).group(2)
+                self.direction = _direction
+                _commande = reg.match(key).group(1)
+                self.commande = _commande
+                switch_dict = { #equivalent switch en C
+                    'C':self._commencer,
+                    'N':self._nord,
+                    'E':self._est,
+                    'S':self._sud,
+                    'O':self._ouest,
+                    'M':self._murer,
+                    'P':self._percer,
+                    'Q':self._quitter,
+                    'H':self._help
+                }
+                if not self.client_name.terminated:
+                    func = switch_dict.get(_commande, self._defaut) # avec valeur par defaut
+                    message_emis = func()
+                    if message_emis.startswith("ordr:"):
+                    #message_emis = input()
+                        if self.direction.isdigit():
+                            for n in range(int(self.direction)):
+                                while  not self.client_name.on_peux_jouper:
+                                    time.sleep(0.5)
+                                self.connexion.send(func().encode("Utf8"))
+                                self.client_name.on_peux_jouper = False
+                        else:              
+                            self.connexion.send(func().encode("Utf8"))
+                            self.client_name.on_peux_jouper = False
+                    else:                
+                        self.connexion.send(func().encode("Utf8"))
+                if message_emis.upper() == "FIN" or self.client_name.terminated:
+                    self.stop()
+                    break
+        except Exception:
+            e = sys.exc_info()[0]
+            print("c'est fini")
+        
 
 def main():
     """  Programme principal - Établissement de la connexion : """
