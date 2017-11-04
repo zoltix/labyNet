@@ -17,6 +17,7 @@ class  Robot:
         self.prev_position_x = position_x
         self.prev_position_y = position_y
         self.prev_symbole = " "
+        self.index = 0
 
     @classmethod
     def construct_by_carte(cls, carte, symbole, name, thread_name):

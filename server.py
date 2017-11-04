@@ -37,13 +37,15 @@ class ThreadClient(threading.Thread):
            client_name  pour ecoho
         """
         try:
+            next_robot = self.jeux.robots.next_robot(self.jeux.dernier_joueur)
             for cle in CONN_CLIENT:
                 if cle != thread_name or soi_meme:  # ne pas le renvoyer à l'émetteur
                     #rechercher le joueur
                     #jeux.robots[]
                     robot = self.jeux.robots.get_robot_thread_name(cle)
                     pre_message = "Vous étes le {}\n".format(robot.name)
-                    if self.jeux.dernier_joueur == robot.name:
+                    #le prochain a jouer sera 
+                    if next_robot.name != robot.name:
                         pos_message = "\nC'est au tour de votre adversaire"
                     else:
                         pos_message = "\nA votre tour"
@@ -98,13 +100,11 @@ class ThreadClient(threading.Thread):
                     lst_ordr = msg_client[4:].split(',')
                     if lst_ordr[1] == 'C':
                         #et rafraichissement de la console et début de partie
-                        if self.jeux.dernier_joueur == self.joueur:
-                            self.broadcast_carte("","",True , thread_name)
-                        else:
-                            self.broadcast_carte("","",True , thread_name)
-                    elif self.jeux.dernier_joueur == self.joueur:
-                        #tente de jouer a la place de qlq d'autre
-                        self.send_message("c'est est pas ton tour", thread_name)
+                        self.broadcast_carte("","",True , thread_name)
+                    elif self.jeux.dernier_joueur != "":
+                        if self.jeux.robots.next_robot(self.jeux.dernier_joueur).name != self.joueur:
+                            #tente de jouer a la place de qlq d'autre
+                            self.send_message("c'est est pas ton tour", thread_name)
                     else:
                         #mouvement du robot 
                         if lst_ordr[1] == 'move':
