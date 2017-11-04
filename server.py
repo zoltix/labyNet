@@ -28,6 +28,28 @@ class ThreadClient(threading.Thread):
         self.connexion = conn
         self.jeux = jeux
         self.joueur = ""
+    
+    def broadcast_carte(self, pre_message, pos_message,soi_meme):
+        """permet d'envoyer un messaga au client avec les cartes spècifique pour chacun 
+           d'entre eux
+           pre_message  message afficher avant la carte
+           pos_message  message afficher apès la carte
+           client_name  pour ecoho
+        """
+        try:
+            for cle in CONN_CLIENT:
+                if cle != thread_name or soi_meme:  # ne pas le renvoyer à l'émetteur
+                    #rechercher le joueur
+                    #jeux.robots[]
+                    message_a_envoyer = pre_message + jeux.afficher_carte_robot(self, joueur) + pos_message  #+"\n"+self.jeux.carte.afficher_carte()
+                    CONN_CLIENT[cle].send(message_a_envoyer.encode("Utf8"))
+
+        except ConnectionError as error_connection:
+            print('Error conncetion: Le client a été retiré {}'.format(error_connection))
+            #self.jeux.robots.pop(self.joueur)  pas correcte
+            del CONN_CLIENT[thread_name]	# supprimer son entrée dans le dictionnaire  
+        
+
     def broadcast(self, message, soi_meme, thread_name):
         """permet d'envoyer un messaga au client
            message = message
@@ -196,35 +218,30 @@ def main():
         #jeux.ajouter_robot("P")
         th_client = ThreadClient(connexion, jeux)
         thread_name = th_client.getName()	  # identifiant du thread
-        if bool(jeux.robots):
-            nombre_de_robot = 1
-            for item in list(jeux.robots):
+        flag_created = False
+        nombre_de_robot = 1
+        if bool(jeux.robots.robots):
+            for item in list(jeux.robots.robots):
                 print('************* robot ****************')
-                print('nom du robot {}'.format(item))
-                print('symbole du robot {}'.format(jeux.robots[item].symbole))
-                print('thread du robot {}'.format(jeux.robots[item].thread_name_r))
-                #test toujours valide
-                if CONN_CLIENT[jeux.robots[item].thread_name_r].fileno() < 0:
+                robot = jeux.robots.get_robot_name(item)
+                print('nom du robot {}'.format(robot.name))
+                print('symbole du robot {}'.format(robot.symbole))
+                print('thread du robot {}'.format(robot.thread_name_r))
+                #test si toujours valide connexion or robot
+                if CONN_CLIENT[robot.thread_name_r].fileno() < 0:
                     jeux.enlever_robot(item)
-                    jeux.ajouter_robot(jeux.robots[item].symbole, item, thread_name)
-                else:
-                    if len(jeux.robots) < 2:
-                        if jeux.robots[item].symbole == "X":
-                            joueur = "joueur2"
-                            jeux.ajouter_robot("x", joueur, thread_name)
-                        elif jeux.robots[item].symbole == "x":
-                            joueur = "joueur1"
-                            jeux.ajouter_robot("X", joueur, thread_name)
-                    else:
-                        pass
+                    jeux.ajouter_robot(robot.symbole, item, thread_name)
+                    flag_created = True
+                    break
                 nombre_de_robot += 1
-            if nombre_de_robot > 2: 
-                msg = "Il y a déjà 2 joueurs FIN \n"
-                connexion.send(msg.encode("Utf8"))
-                continue
+            #si pas de place on fait un nouveau robot
+            if not flag_created :
+                    joueur = "joueur"+str(nombre_de_robot) #identifier le jouer
+                    jeux.ajouter_robot("x", joueur , thread_name)
         else:
-            joueur = "joueur1"
-            jeux.ajouter_robot("X", joueur, thread_name)
+            #si on a pas de collection de robot on rajoute
+            joueur = "joueur"+str(nombre_de_robot)
+            jeux.ajouter_robot("x", joueur, thread_name)
         # Créer un nouvel objet thread pour gérer la connexion :
         th_client.joueur = joueur
         th_client.start()
@@ -233,7 +250,7 @@ def main():
         print("Client %s connecté, adresse IP %s, port %s." %\
             (thread_name, adresse[0], adresse[1]))
         # Dialogue avec le client :
-        msg = "Bienveun joueur {} avec symbole {} \n Vous êtes connecté au serveur. \nAppuyé sur C pour commencer\n".format(joueur, jeux.robots[joueur].symbole)
+        msg = "Bienveun joueur {} avec symbole {} \n Vous êtes connecté au serveur. \nAppuyé sur C pour commencer\n".format(joueur, jeux.robots.get_robot_name(joueur).symbole)
         #msg = msg + jeux.carte.afficher_carte()
         #message de bienvenue sur le serveur
         connexion.send(msg.encode("Utf8"))

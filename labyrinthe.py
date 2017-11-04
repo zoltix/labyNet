@@ -8,6 +8,7 @@ import pickle
 from carte import Carte
 from obstacle import Obstacle
 from robot import Robot
+from robots import Robots
 
 class PrecentePosition:
     """Memoriser la précédente position"""
@@ -40,8 +41,8 @@ class Labyrinthe:
         assert isinstance(carte, Carte)# astuce pour ide pour intellisence---pff longue recherche
         self.carte = carte
         self._chemin = os.path.join("cartes", (self.carte.nom +"pre"))
-        self.robots = {}
-        #self.robots[joueur] = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, 'X')
+        self.robots = Robots()
+        #get_robot_name(joueur) = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, 'X')
         #attention pour chargement après sauvegarde
         #self.robot = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
         #self._position_robot_x, self._position_robot_y = \
@@ -57,26 +58,26 @@ class Labyrinthe:
     def ajouter_robot(self, symbole, joueur, thread_name):
         """ Ajourter un robot """
         x, y = self.carte.robot_random_position(symbole) #make a random posisition
-        self.robots[joueur] = Robot.construct_by_position(x, y, symbole, thread_name)
+        self.robots.ajouter_robot(Robot.construct_by_position(x, y, symbole, joueur,thread_name))
     def enlever_robot(self, joueur):
         """"Remove robot"""
-        self.carte.grille[self.robots[joueur].position_y][self.robots[joueur].position_x] = ' '
-        self.robots.pop(joueur)
-    
+        self.carte.grille[self.robots.get_robot_name(joueur).position_y][self.robots.get_robot_name(joueur).position_x] = ' '
+        self.robots.enlever_robot(joueur)
+
     def porte_en_mur(self, step_x, step_y, joueur):
         """"transforme porte en mur"""
         #check if porte
-        if self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+        if self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y][self.robots.get_robot_name(joueur).position_x + step_x] \
                 == Obstacle.collection_obstacle.get(".").symbole:
-            self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+            self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y][self.robots.get_robot_name(joueur).position_x + step_x] \
                                     = Obstacle.collection_obstacle.get("O").symbole
 
     def mur_en_porte(self, step_x, step_y, joueur):
         """"transforme mur en porte """
         #check if mur
-        if self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+        if self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y][self.robots.get_robot_name(joueur).position_x + step_x] \
                     == Obstacle.collection_obstacle.get("O").symbole:
-            self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
+            self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y][self.robots.get_robot_name(joueur).position_x + step_x] \
                                     = Obstacle.collection_obstacle.get(".").symbole
 
     def move(self, step_x, step_y, joueur):
@@ -88,33 +89,33 @@ class Labyrinthe:
     def _move(self, step_x, step_y, joueur):
         """ mouvement du robot """
         try:
-            if len(self.carte.grille) > ( self.robots[joueur].position_y + step_y) \
-            and (self.robots[joueur].position_y + step_y) >= 0:
-                if len(self.carte.grille[self.robots[joueur].position_y + step_y]) >\
-                (self.robots[joueur].position_x + step_x) \
-                and (self.robots[joueur].position_x + step_x) >= 0:
+            if len(self.carte.grille) > ( self.robots.get_robot_name(joueur).position_y + step_y) \
+            and (self.robots.get_robot_name(joueur).position_y + step_y) >= 0:
+                if len(self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y]) >\
+                (self.robots.get_robot_name(joueur).position_x + step_x) \
+                and (self.robots.get_robot_name(joueur).position_x + step_x) >= 0:
                     if Obstacle.collection_obstacle.get( \
-                        self.carte.grille[self.robots[joueur].position_y+ step_y][self.robots[joueur].position_x + step_x]).fin:
+                        self.carte.grille[self.robots.get_robot_name(joueur).position_y+ step_y][self.robots.get_robot_name(joueur).position_x + step_x]).fin:
                         #os.remove(self._chemin)
                         return 2 #on retourne  c'est fini voir _STATUS_Mouvement
                         #delete fichier de sauvegarde
                     else:
                         pass
                     if  not Obstacle.collection_obstacle.get(\
-                             self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x]).bloquant:
+                             self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y][self.robots.get_robot_name(joueur).position_x + step_x]).bloquant:
                         # restauration du précédent symbole
-                        self.carte.grille[self.robots[joueur].position_y][self.robots[joueur].position_x] \
-                                   = self.robots[joueur].prev_symbole
+                        self.carte.grille[self.robots.get_robot_name(joueur).position_y][self.robots.get_robot_name(joueur).position_x] \
+                                   = self.robots.get_robot_name(joueur).prev_symbole
                         # sauvegarde du symbole qui va être écrasé par le robot (X)
-                        self.robots[joueur].prev_symbole \
-                                     = self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x]
+                        self.robots.get_robot_name(joueur).prev_symbole \
+                                     = self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y][self.robots.get_robot_name(joueur).position_x + step_x]
                         #mettre le robot a sa nouvelle place avec le symbole dans la collection
-                        self.carte.grille[self.robots[joueur].position_y + step_y][self.robots[joueur].position_x + step_x] \
-                                    = self.robots[joueur].symbole #Obstacle.collection_obstacle['X'].symbole 
+                        self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y][self.robots.get_robot_name(joueur).position_x + step_x] \
+                                    = self.robots.get_robot_name(joueur).symbole #Obstacle.collection_obstacle['X'].symbole 
                         #self.carte.coord_debut_x, self.carte.coord_debut_y  \
-                        #             = self.robots[joueur].position_x + step_x, self.robots[joueur].position_y + step_y
-                        self.robots[joueur].position_x, self.robots[joueur].position_y  \
-                                    = self.robots[joueur].position_x + step_x, self.robots[joueur].position_y + step_y
+                        #             = self.robots.get_robot_name(joueur).position_x + step_x, self.robots.get_robot_name(joueur).position_y + step_y
+                        self.robots.get_robot_name(joueur).position_x, self.robots.get_robot_name(joueur).position_y  \
+                                    = self.robots.get_robot_name(joueur).position_x + step_x, self.robots.get_robot_name(joueur).position_y + step_y
                         #self.carte.enregistre_partie()
                         #self.enregistrer_labyrinthe()
                         return 0 # on retourne on continue voir _STATUS_Mouvement
@@ -127,6 +128,14 @@ class Labyrinthe:
         except Exception:
             e = sys.exc_info()[0]
             print("aie aie encore un insecte électrocuté\n{}".format(e))
+    def afficher_carte_robot(self, joueur):
+        """ affichage de la carte avec le robot du joueur de la thread """
+        #copie de la grille
+        grille = self.carte.grille
+        #vision courrante du joueur
+        grille[self.robots.get_robot_name(joueur).position_y][self.robots.get_robot_name(joueur).position_x] = 'X'
+        return '\n'.join(map(''.join, grille))
+
 
     def enregistrer_labyrinthe(self):
         """Enregistrer le status du labyrinthe"""

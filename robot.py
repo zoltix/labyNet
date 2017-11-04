@@ -8,8 +8,8 @@ class  Robot:
     """
         caractèristique du Robot
     """
-    def __init__(self, position_x, position_y, symbole, thread_name):
-        self.name = 'default' #ne pas oublier de le mettre dans le constructeurS
+    def __init__(self, position_x, position_y, symbole, name, thread_name):
+        self.name = name #ne pas oublier de le mettre dans le constructeurS
         self.thread_name_r = thread_name
         self.position_x = position_x
         self.position_y = position_y
@@ -19,13 +19,13 @@ class  Robot:
         self.prev_symbole = " "
 
     @classmethod
-    def construct_by_carte(cls, carte, symbole, thread_name):
+    def construct_by_carte(cls, carte, symbole, name, thread_name):
         """Constucteur avec surcharge """
         assert isinstance(carte, Carte)# astuce pour ide---pff longue recherche
         robot_x, robot_y = carte.robot_positiont_depart()
-        return cls(robot_x, robot_y, symbole, thread_name)
+        return cls(robot_x, robot_y, symbole, name, thread_name)
 
     @classmethod
-    def construct_by_position(cls, position_x, position_y, symbole, thread_name):
+    def construct_by_position(cls, position_x, position_y, symbole, name, thread_name):
         """Constucteur avec surcharge """
-        return cls(position_x, position_y, symbole, thread_name)
+        return cls(position_x, position_y, symbole, name, thread_name)
