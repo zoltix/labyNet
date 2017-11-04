@@ -21,12 +21,3 @@ class ParamThread:
         """changer la valeur de la thread(seulement a l'initisaltion de la thread)"""
         self.__thread_name = thread_name
     threadName = property(get_thread_name, set_thread_name)
-
-    # def get_dernier_joueur(self):
-    #     """ dernier joueur qui a jouer"""
-    #     return self.dernier_joueur
-    # def set_dernier_joueur(self, joueur):
-    #     """ dernier joueur qui a jouer"""
-    #     self.dernier_joueur = joueur
-    # threadName = property(get_dernier_joueur, set_dernier_joueur)
-    
