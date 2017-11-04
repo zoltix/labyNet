@@ -5,6 +5,7 @@
 import os
 import sys
 import pickle
+import copy
 from carte import Carte
 from obstacle import Obstacle
 from robot import Robot
@@ -131,8 +132,9 @@ class Labyrinthe:
     def afficher_carte_robot(self, joueur):
         """ affichage de la carte avec le robot du joueur de la thread """
         #copie de la grille
-        grille = self.carte.grille
+        grille = copy.deepcopy(self.carte.grille)
         #vision courrante du joueur
+        #mettre un grand X pour son propre Robot
         grille[self.robots.get_robot_name(joueur).position_y][self.robots.get_robot_name(joueur).position_x] = 'X'
         return '\n'.join(map(''.join, grille))
 

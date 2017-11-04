@@ -29,7 +29,7 @@ class ThreadClient(threading.Thread):
         self.jeux = jeux
         self.joueur = ""
     
-    def broadcast_carte(self, pre_message, pos_message,soi_meme):
+    def broadcast_carte(self, pre_message, pos_message,soi_meme, thread_name):
         """permet d'envoyer un messaga au client avec les cartes spècifique pour chacun 
            d'entre eux
            pre_message  message afficher avant la carte
@@ -41,7 +41,8 @@ class ThreadClient(threading.Thread):
                 if cle != thread_name or soi_meme:  # ne pas le renvoyer à l'émetteur
                     #rechercher le joueur
                     #jeux.robots[]
-                    message_a_envoyer = pre_message + jeux.afficher_carte_robot(self, joueur) + pos_message  #+"\n"+self.jeux.carte.afficher_carte()
+                    robot = self.jeux.robots.get_robot_thread_name(cle)
+                    message_a_envoyer = pre_message + self.jeux.afficher_carte_robot(robot.name) + pos_message  #+"\n"+self.jeux.carte.afficher_carte()
                     CONN_CLIENT[cle].send(message_a_envoyer.encode("Utf8"))
 
         except ConnectionError as error_connection:
@@ -93,11 +94,13 @@ class ThreadClient(threading.Thread):
                     if lst_ordr[1] == 'C':
                         #et rafraichissement de la console et début de partie
                         if self.jeux.dernier_joueur == self.joueur:
-                            self.broadcast(self.jeux.carte.afficher_carte() + "\nA votre tour", False, thread_name)
-                            self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
+                            self.broadcast_carte("pre mess","pos mess",True , thread_name)
+                            #self.broadcast(self.jeux.carte.afficher_carte() + "\nA votre tour", False, thread_name)
+                            #self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
                         else:
-                            self.broadcast(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", False, thread_name)
-                            self.send_message(self.jeux.carte.afficher_carte() + "\nA votre tour", thread_name)
+                            self.broadcast_carte("pre mess","pos mess",True , thread_name)
+                            #self.broadcast(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", False, thread_name)
+                            #self.send_message(self.jeux.carte.afficher_carte() + "\nA votre tour", thread_name)
                     elif self.jeux.dernier_joueur == self.joueur:
                         #tente de jouer a la place de qlq d'autre
                         self.send_message("c'est est pas ton tour", thread_name)
@@ -114,8 +117,9 @@ class ThreadClient(threading.Thread):
                             if lst_ordr[2] == 'P': # détruit un mur et on le remplace par une porte 
                                 ret_status =  self.jeux.mur_en_porte(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
-                        self.broadcast(self.jeux.carte.afficher_carte() + "\nA votre tour", False, thread_name)
-                        self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
+                        self.broadcast_carte("pre mess","pos mess",True , thread_name)
+                        #self.broadcast(self.jeux.carte.afficher_carte() + "\nA votre tour", False, thread_name)
+                        #self.send_message(self.jeux.carte.afficher_carte() + "\nVous avez joué!!", thread_name)
                 else:
                     message = "%s> %s" % (thread_name, msg_client)
                     print(message)
