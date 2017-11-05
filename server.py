@@ -100,12 +100,8 @@ class ThreadClient(threading.Thread):
                     lst_ordr = msg_client[4:].split(',')
                     if lst_ordr[1] == 'C':
                         #et rafraichissement de la console et début de partie
-                        self.broadcast_carte("","",True , thread_name)
-                    elif self.jeux.dernier_joueur != "":
-                        if self.jeux.robots.next_robot(self.jeux.dernier_joueur).name != self.joueur:
-                            #tente de jouer a la place de qlq d'autre
-                            self.send_message("c'est est pas ton tour", thread_name)
-                    else:
+                        self.broadcast_carte("","",True , thread_name)  
+                    elif  self.jeux.dernier_joueur ==  '' or self.jeux.robots.next_robot(self.jeux.dernier_joueur).name == self.joueur :
                         #mouvement du robot 
                         if lst_ordr[1] == 'move':
                             #on bouge le robot
@@ -119,6 +115,8 @@ class ThreadClient(threading.Thread):
                                 ret_status =  self.jeux.mur_en_porte(int(lst_ordr[3]), int(lst_ordr[4]), self.joueur)
                             self.jeux.dernier_joueur = self.joueur
                         self.broadcast_carte("","",True , thread_name)
+                    else:
+                        self.send_message("ce n'est pas ton tour", thread_name)
                 else:
                     message = "%s> %s" % (thread_name, msg_client)
                     print(message)
