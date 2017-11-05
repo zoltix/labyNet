@@ -4,7 +4,7 @@
          avec l'utilisation des setter et getter
 """
 class ParamThread:
-    """ class pour partager les paramètre entre les """
+    """ class pour partager les paramètres entre les thread"""
     def __init__(self, thread_name):
         self.set_thread_name(thread_name)
         self.terminated = False

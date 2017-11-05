@@ -10,12 +10,12 @@ class  Robot:
     """
     def __init__(self, position_x, position_y, symbole, name, thread_name):
         self.name = name #ne pas oublier de le mettre dans le constructeurS
-        self.thread_name_r = thread_name
+        self.thread_name_r = thread_name # nom de la thead
         self.position_x = position_x
         self.position_y = position_y
         self.symbole = symbole
-        self.prev_position_x = position_x
-        self.prev_position_y = position_y
+        self.prev_position_x = position_x #mémorise la précédente position
+        self.prev_position_y = position_y #mémorise la précédente position
         self.prev_symbole = " "
         self.index = 0
 

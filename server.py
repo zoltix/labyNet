@@ -54,7 +54,6 @@ class ThreadClient(threading.Thread):
 
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
-            #self.jeux.robots.pop(self.joueur)  pas correcte
             del CONN_CLIENT[thread_name]	# supprimer son entrée dans le dictionnaire  
         
 
@@ -72,11 +71,9 @@ class ThreadClient(threading.Thread):
 
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
-            #self.jeux.robots.pop(self.joueur)  pas correcte
             del CONN_CLIENT[thread_name]	# supprimer son entrée dans le dictionnaire
     def send_message(self, message, thread_name):
         """envoie un message uniquement a un clien"""
-        #message = message +"\n"+self.carte.afficher_carte()
         CONN_CLIENT[thread_name].send(message.encode("Utf8"))
     def _whoim(self):
         return "whoim"
@@ -127,7 +124,6 @@ class ThreadClient(threading.Thread):
                     message = "%s> %s" % (thread_name, msg_client)
                     print(message)
                     # Faire suivre le message à tous les autres clients :
-                    #self.broadcast(msg_client, True, thread_name)
                 if ret_status == 2: 
                     self.broadcast( "                      \n"
                                 +"██████╗█████████████╗██████╗██╗   ██╗   \n" 
@@ -267,8 +263,6 @@ def main():
             (thread_name, adresse[0], adresse[1]))
         # Dialogue avec le client :
         msg = "Bienveun joueur {} avec symbole {} \n Vous êtes connecté au serveur. \nAppuyé sur C pour commencer\n".format(joueur, jeux.robots.get_robot_name(joueur).symbole)
-        #msg = msg + jeux.carte.afficher_carte()
-        #message de bienvenue sur le serveur
         connexion.send(msg.encode("Utf8"))
 
 if __name__ == '__main__':

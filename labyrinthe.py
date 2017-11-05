@@ -45,16 +45,9 @@ class Labyrinthe:
         self._chemin = os.path.join("cartes", (self.carte.nom +"pre"))
         self.robots = Robots()
         self.partie_commencee = False
-        #get_robot_name(joueur) = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, 'X')
-        #attention pour chargement après sauvegarde
-        #self.robot = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
-        #self._position_robot_x, self._position_robot_y = \
-        #   self.carte.coord_debut_x, self.carte.coord_debut_y
         self.precedent_position = PrecentePosition(" ")
         self.dernier_joueur = ""
 
-    #@classmethod
-    #def
     def get_help(self):
         """obtenir l'aide"""
         return Labyrinthe._STATUS_Mouvement.get(5)
@@ -93,15 +86,14 @@ class Labyrinthe:
         """ mouvement du robot """
         try:
             if len(self.carte.grille) > ( self.robots.get_robot_name(joueur).position_y + step_y) \
-            and (self.robots.get_robot_name(joueur).position_y + step_y) >= 0:
+            and (self.robots.get_robot_name(joueur).position_y + step_y) >= 0: #test is on est toujours dans la grille
                 if len(self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y]) >\
                 (self.robots.get_robot_name(joueur).position_x + step_x) \
                 and (self.robots.get_robot_name(joueur).position_x + step_x) >= 0:
-                    if Obstacle.collection_obstacle.get( \
-                        self.carte.grille[self.robots.get_robot_name(joueur).position_y+ step_y][self.robots.get_robot_name(joueur).position_x + step_x]).fin:
-                        #os.remove(self._chemin)
+                    if Obstacle.collection_obstacle.get( \ 
+                        self.carte.grille[self.robots.get_robot_name(joueur).position_y+ step_y][self.robots.get_robot_name(joueur).position_x + step_x]).fin: 
+                        #test si la partie est finieS
                         return 2 #on retourne  c'est fini voir _STATUS_Mouvement
-                        #delete fichier de sauvegarde
                     else:
                         pass
                     if  not Obstacle.collection_obstacle.get(\

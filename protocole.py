@@ -2,6 +2,7 @@
 """
 ce module défin un language de communictation entre les client et le serveur
 ce qui permet de faire du chat et donner des ordres dans le labyrinthe.
+N'est pas utilisé pour une prochaine version.
  """
 
 class Protocole:
@@ -35,5 +36,3 @@ class Protocole:
         ret = func()
         return ret
 
-# t_test = Protocole()
-# t_test.execute("chat:auie")
