@@ -1,8 +1,8 @@
 # labyNet
-labyrinthe Client Server Activité_partie 4 pour "Apprenez à programmer en Python" 
+labyrinthe Client Server ActivitÃ©_partie 4 pour "Apprenez Ã  programmer en Python" 
 Ceci est une version qui fonctionne avec beaucoup de buggs
-Le code est posté sur https://github.com/zoltix/labyNet
-Testé sur: windows 10 build 1709 et Ubuntu(16.04)
+Le code est postÃ© sur https://github.com/zoltix/labyNet
+TestÃ© sur: windows 10 build 1709 et Ubuntu(16.04)
 Version de Python 3.6.2
 	sur ubuntu installattion 16,04:
 		sudo add-apt-repository ppa:jonathonf/python-3.6
@@ -11,13 +11,11 @@ Version de Python 3.6.2
 1) Lancer le serveur
 	python serever.py
 		Choisir la carte(prison ou facile)
-2) lancé autant de client que vous voulez
+2) lancÃ© autant de client que vous voulez
 	python client.py
-   une fois les clients démarés, Il faudra taper sur C pour commencer la partie
+   une fois les clients dÃ©marÃ©s, Il faudra taper sur C pour commencer la partie
 
 Bug:
 	Perte de connexion. 
 	Gestion de sortie des clients
-	Arrêter le serveur
-
-	
+	ArrÃªter le serveur
