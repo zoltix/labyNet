@@ -98,8 +98,12 @@ class ThreadClient(threading.Thread):
                 if msg_client.startswith("ordr:"):
                     #""" action dans le labyrinthe"""
                     lst_ordr = msg_client[4:].split(',')
-                    if lst_ordr[1] == 'C':
+                    if lst_ordr[1] == 'A':
                         #et rafraichissement de la console et début de partie
+                        self.broadcast_carte("","",True , thread_name)  
+                    if lst_ordr[1] == 'C':
+                        #interdiction de rajouter de nouveau client sur une partie en cours
+                        self.jeux.partie_commencee = True
                         self.broadcast_carte("","",True , thread_name)  
                     elif  self.jeux.dernier_joueur ==  '' or self.jeux.robots.next_robot(self.jeux.dernier_joueur).name == self.joueur :
                         #mouvement du robot 
@@ -146,6 +150,10 @@ class ThreadClient(threading.Thread):
             self.jeux.enlever_robot(self.joueur)
             del CONN_CLIENT[thread_name]	# supprimer son entrée dans le dictionnaire
             print("Client %s déconnecté." % thread_name)
+            if len(CONN_CLIENT) == 0:
+                #si plus de client, ou peut relancer une nouvelle partie
+                self.jeux.partie_commencee = False
+                print("Une nouvelle partie peux commencer FIN .")
         except ConnectionError as error_connection:
             print('Error conncetion: Le client a été retiré {}'.format(error_connection))
             self.jeux.enlever_robot(self.joueur)
@@ -215,6 +223,11 @@ def main():
     while 1:
         #attendre de la connexion
         connexion, adresse = my_socket.accept()
+        if jeux.partie_commencee == True:
+            #message que la partie est commencé est que personne ne peux se rajouter
+            msg = 'Sorry, partie est commencée FIN '
+            connexion.send(msg.encode("Utf8"))
+            continue
         #choix du symbole du symbole du robot
         #jeux.ajouter_robot("P")
         th_client = ThreadClient(connexion, jeux)

@@ -26,7 +26,8 @@ class Labyrinthe:
                          2:'Félicitations ! Vous avez gagné !',\
                          3:'A Bientôt, la partie a été savegardé pour plus tard',\
                          4:'Ce n\'est pas la bonne valeur',\
-                         5:'(C) Commencer ou afficher carte\n'\
+                         5:'(C) Commencer la partie\n'\
+                            '(A)  afficher carte ou refraichir'
                             '(N+) déplacer vers le nord\n'\
                             '(E+) déplacer vers l''est\n'\
                             '(S+) déplacer vers le sud\n'\
@@ -43,6 +44,7 @@ class Labyrinthe:
         self.carte = carte
         self._chemin = os.path.join("cartes", (self.carte.nom +"pre"))
         self.robots = Robots()
+        self.partie_commencee = False
         #get_robot_name(joueur) = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y, 'X')
         #attention pour chargement après sauvegarde
         #self.robot = Robot.construct_by_position(self.carte.coord_debut_x, self.carte.coord_debut_y)
