@@ -11,7 +11,7 @@ Version de Python 3.6.2
 1) Lancer le serveur
 	python serever.py
 		Choisir la carte(prison ou facile)
-2) lancé autant de client que vous voulez
+2) Lancer autant de client que vous voulez
 	python client.py
    une fois les clients démarés, Il faudra taper sur C pour commencer la partie
 
