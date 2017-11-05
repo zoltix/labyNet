@@ -101,10 +101,12 @@ class ThreadClient(threading.Thread):
                     if lst_ordr[1] == 'A':
                         #et rafraichissement de la console et début de partie
                         self.broadcast_carte("","",True , thread_name)  
-                    if lst_ordr[1] == 'C':
+                    elif lst_ordr[1] == 'C':
                         #interdiction de rajouter de nouveau client sur une partie en cours
                         self.jeux.partie_commencee = True
-                        self.broadcast_carte("","",True , thread_name)  
+                        self.broadcast_carte("","",True , thread_name) 
+                    elif self.jeux.partie_commencee == False:
+                        self.send_message("La Partie n'est pas commencée. Appuyer sur C ou attendre", thread_name)
                     elif  self.jeux.dernier_joueur ==  '' or self.jeux.robots.next_robot(self.jeux.dernier_joueur).name == self.joueur :
                         #mouvement du robot 
                         if lst_ordr[1] == 'move':
