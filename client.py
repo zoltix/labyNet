@@ -172,7 +172,7 @@ class ThreadEmission(threading.Thread):
                     #message_emis = input()
                         if self.direction.isdigit():
                             for n in range(int(self.direction)):
-                                while  not self.client_name.on_peux_jouper:
+                                while  not self.client_name.on_peux_jouper and not self.client_name.terminated :
                                     time.sleep(0.5)
                                 self.connexion.send(func().encode("Utf8"))
                                 self.client_name.on_peux_jouper = False
