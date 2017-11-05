@@ -113,15 +113,15 @@ class ThreadEmission(threading.Thread):
         return  step_x, step_y
 
     def _murer(self):
-         """ordre pour murer"""
+        """ordre pour murer"""
         step_x, step_y = self.convert_cardinalite(self.direction)
         message_emis = "ordr:{},build,M,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
     def _percer(self):
-         """ordre pour ppercer un mur"""
+        """ordre pour ppercer un mur"""
         step_x, step_y = self.convert_cardinalite(self.direction)
-        message_emis = "ordr:{},build,P,{},{}".format(self.client_name.get_thread_name(), step_y , step_x)
+        message_emis = "ordr:{},build,P,{},{}".format(self.client_name.get_thread_name(), step_y, step_x)
         return message_emis
 
     def _commencer(self):
