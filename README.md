@@ -15,6 +15,8 @@ Version de Python 3.6.2
 	python client.py
    une fois les clients démarés, Il faudra taper sur C pour commencer la partie
 
+Il y une vidéo comme démo
+
 Bug:
 	Perte de connexion. 
 	Gestion de sortie des clients
