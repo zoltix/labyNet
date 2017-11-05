@@ -90,7 +90,7 @@ class Labyrinthe:
                 if len(self.carte.grille[self.robots.get_robot_name(joueur).position_y + step_y]) >\
                 (self.robots.get_robot_name(joueur).position_x + step_x) \
                 and (self.robots.get_robot_name(joueur).position_x + step_x) >= 0:
-                    if Obstacle.collection_obstacle.get( \ 
+                    if Obstacle.collection_obstacle.get( \
                         self.carte.grille[self.robots.get_robot_name(joueur).position_y+ step_y][self.robots.get_robot_name(joueur).position_x + step_x]).fin: 
                         #test si la partie est finieS
                         return 2 #on retourne  c'est fini voir _STATUS_Mouvement
