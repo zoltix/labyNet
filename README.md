@@ -13,9 +13,9 @@ Version de Python 3.6.2
 		Choisir la carte(prison ou facile)
 2) Lancer autant de client que vous voulez
 	python client.py
-   une fois les clients démarés, Il faudra taper sur C pour commencer la partie
+   		une fois les clients démarés, Il faudra taper sur C pour commencer la partie.
 
-Il y une vidéo comme démo
+Il y une vidéo comme démo "demo_linux.mkv"
 
 Bug:
 	Perte de connexion. 
