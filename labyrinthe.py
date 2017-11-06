@@ -32,7 +32,7 @@ class Labyrinthe:
                             '(E+) déplacer vers l''est\n'\
                             '(S+) déplacer vers le sud\n'\
                             '(O+) déplacer vers l\'ouest\n'\
-                            '(Q) sauvegarder et quitter\n'\
+                            '(Q)  quitter\n'\
                             '(P*) percer une porte a la place d''un mur\n'\
                             '(M*) construire un mur a la place porte\n'\
                              '* cardinalité NESO ie: ME or PS\n'
