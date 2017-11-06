@@ -34,7 +34,7 @@ class ThreadReception(threading.Thread):
                 self.client_name.on_peux_jouper = True
             ThreadReception.clear()
             print(message_recu)
-
+            #afficher le prompt
             print("(H) pour afficher l'aide ou commande pour un déplacement:")
             if not message_recu or message_recu.upper() == "FIN" or message_recu.find(' FIN ') != -1:
                 #ceci indiquera au reste de l'applictation c'est fini

@@ -27,7 +27,7 @@ class Labyrinthe:
                          3:'A Bientôt, la partie a été savegardé pour plus tard',\
                          4:'Ce n\'est pas la bonne valeur',\
                          5:'(C) Commencer la partie\n'\
-                            '(A)  afficher carte ou refraichir'
+                            '(A)  afficher carte ou refraichir\n'
                             '(N+) déplacer vers le nord\n'\
                             '(E+) déplacer vers l''est\n'\
                             '(S+) déplacer vers le sud\n'\
