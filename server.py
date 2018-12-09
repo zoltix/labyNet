@@ -17,7 +17,7 @@ if platform.system() == 'Windows':
 if platform.system() == 'Linux':
     CLEAR = lambda: os.system('clear')
 
-HOST = '127.0.01'
+HOST = '127.0.0.1'
 PORT = 46000
 CONN_CLIENT = {}	# dictionnaire des connexions clients
 
